@@ -3,7 +3,7 @@ import java.text.DecimalFormat
 import java.text.NumberFormat
 import kotlin.math.roundToInt
 
-class PrepaidCard(firstname: String, middlename: String?, lastname: String, currency: String, balance: String, dateOfBirth: String, cardNumber: Number):
+class PrepaidCard(firstname: String, middlename: String?, lastname: String, currency: String, balance: String, dateOfBirth: String, cardNumber: String):
     Account( firstname, middlename, lastname, currency, balance, dateOfBirth) {
 
     val x = cardNumber.toString()

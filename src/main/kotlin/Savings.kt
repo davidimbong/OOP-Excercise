@@ -3,7 +3,7 @@ import java.text.DecimalFormat
 import java.text.NumberFormat
 import java.util.*
 
-class Savings(firstname: String, middlename: String?, lastname: String, currency: String, balance: String, dateOfBirth: String, accountNumber: Number):
+class Savings(firstname: String, middlename: String?, lastname: String, currency: String, balance: String, dateOfBirth: String, accountNumber: String):
     Account( firstname, middlename, lastname, currency, balance, dateOfBirth) {
 
     val x = accountNumber.toString()
