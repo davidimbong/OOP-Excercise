@@ -1,8 +1,8 @@
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
-abstract class Account( var firstname: String, var middlename: String?,
-    var lastname: String, var currency: String, var balance: String, var dateOfBirth: String){
+abstract class Account( val firstname: String, val middlename: String?,
+                        val lastname: String, val currency: String, val balance: String, val dateOfBirth: String){
 
     abstract fun getFormattedDetails()
 

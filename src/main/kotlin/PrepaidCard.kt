@@ -17,7 +17,7 @@ class PrepaidCard(firstname: String, middlename: String?, lastname: String, curr
             s.append(c)
         }
 
-        val name = "$lastname, $firstname ${if(middlename!=null)middlename + " " else "" }"
+        val name = "$lastname, $firstname ${if(middlename!=null && !middlename.isEmpty())middlename + " " else "" }"
         val bal = DecimalFormat("#,##0.00").format(balance.toBigDecimal().setScale(2,RoundingMode.DOWN))
 
         println("$s | $name| Prepaid Card | $currency $bal | ${if(isMinor) "MINOR" else "NON-MINOR"}")

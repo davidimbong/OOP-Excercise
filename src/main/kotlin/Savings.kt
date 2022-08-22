@@ -17,7 +17,7 @@ class Savings(firstname: String, middlename: String?, lastname: String, currency
             s.append(c)
         }
 
-        val name = "$lastname, $firstname ${if(middlename!=null)middlename + " " else "" }"
+        val name = "$lastname, $firstname ${if(middlename!=null && !middlename.isEmpty())middlename + " " else "" }"
         val bal = DecimalFormat("#,##0.00").format(balance.toBigDecimal().setScale(2, RoundingMode.DOWN))
 
         println("$s | $name| Savings Account | $currency $bal | ${if(isMinor) "MINOR" else "NON-MINOR"}")
