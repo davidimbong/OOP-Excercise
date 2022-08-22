@@ -1,4 +1,5 @@
 import java.text.DecimalFormat
+import java.text.NumberFormat
 import kotlin.math.roundToInt
 
 class PrepaidCard(firstname: String, middlename: String?, lastname: String, currency: String, balance: String, dateOfBirth: String, cardNumber: Number):
@@ -15,7 +16,10 @@ class PrepaidCard(firstname: String, middlename: String?, lastname: String, curr
             s.append(c)
         }
 
-        println("$s | $lastname, $firstname ${if(middlename!=null)middlename + " " else "" }| Prepaid Card | $currency ${balance.toFloat().toBigDecimal().setScale(2)} | ${if(isMinor) "MINOR" else "NON-MINOR"}")
+        val name = "$lastname, $firstname ${if(middlename!=null)middlename + " " else "" }"
+        val bal = DecimalFormat("###,###,###.00").format(balance.toFloat().toBigDecimal().setScale(2))
+
+        println("$s | $name| Prepaid Card | $currency $bal | ${if(isMinor) "MINOR" else "NON-MINOR"}")
     }
 
 

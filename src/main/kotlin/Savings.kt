@@ -1,3 +1,4 @@
+import java.text.DecimalFormat
 import java.text.NumberFormat
 import java.util.*
 
@@ -14,8 +15,10 @@ class Savings(firstname: String, middlename: String?, lastname: String, currency
             }
             s.append(c)
         }
+        val name = "$lastname, $firstname ${if(middlename!=null)middlename + " " else "" }"
+        val bal = DecimalFormat("###,###,###.00").format(balance.toFloat().toBigDecimal().setScale(2))
 
-        println("$s | $lastname, $firstname ${if(middlename!=null)middlename + " " else "" } | Savings Account | $currency ${balance.toFloat().toBigDecimal().setScale(2)} | ${if(isMinor) "MINOR" else "NON-MINOR"}")
+        println("$s | $name| Savings Account | $currency $bal | ${if(isMinor) "MINOR" else "NON-MINOR"}")
     }
 
 }
