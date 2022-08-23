@@ -13,8 +13,8 @@ class Savings(
     Account(firstname, middlename, lastname, currency, balance, dateOfBirth) {
     override fun getFormattedDetails() {
 
-        val formattedAccNumber: StringBuilder = java.lang.StringBuilder("").apply {
-            accountNumber.mapIndexed { index, c ->
+        val formattedAccNumber: StringBuilder = java.lang.StringBuilder().apply {
+            accountNumber.forEachIndexed() { index, c ->
                 if ((index) % 4 == 0 && index != 0) {
                     append(" ")
                 }

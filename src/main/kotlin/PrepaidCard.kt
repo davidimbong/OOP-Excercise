@@ -15,7 +15,7 @@ class PrepaidCard(
 
 
         val formattedCardNumber: StringBuilder = java.lang.StringBuilder("").apply {
-            cardNumber.mapIndexed { index, c ->
+            cardNumber.forEachIndexed { index, c ->
                 if ((index) % 4 == 0 && index != 0) {
                     append(" ")
                 }
