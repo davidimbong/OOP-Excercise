@@ -5,6 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="437f0b6d-737f-44c4-a189-bcb2a21ef110" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/Account.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/Account.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/Main.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/Main.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/PrepaidCard.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/PrepaidCard.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/Savings.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/Savings.kt" afterDir="false" />
@@ -67,5 +69,15 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="First Commit OOP Exercise" />
     <option name="LAST_COMMIT_MESSAGE" value="First Commit OOP Exercise" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <breakpoint enabled="true" type="java-exception">
+          <properties class="java.lang.NullPointerException" package="java.lang" />
+          <option name="timeStamp" value="1" />
+        </breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>

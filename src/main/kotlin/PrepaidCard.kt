@@ -3,24 +3,54 @@ import java.text.DecimalFormat
 import java.text.NumberFormat
 import kotlin.math.roundToInt
 
-class PrepaidCard(firstname: String, middlename: String?, lastname: String, currency: String, balance: String, dateOfBirth: String, cardNumber: String):
-    Account( firstname, middlename, lastname, currency, balance, dateOfBirth) {
+class PrepaidCard(
+    firstname: String,
+    middlename: String?,
+    lastname: String,
+    currency: String,
+    balance: String,
+    dateOfBirth: String,
+    cardNumber: String
+) :
+    Account(firstname, middlename, lastname, currency, balance, dateOfBirth) {
 
-    val x = cardNumber.toString()
-    val s:StringBuilder = java.lang.StringBuilder("")
+    private val tempNumber = cardNumber
 
     override fun getFormattedDetails() {
-        x.mapIndexed{ index, c ->
-            if ((index)%4 ==0 && index != 0){
-                s.append(" ")
+
+        val formattedCardNumber: StringBuilder = java.lang.StringBuilder("").apply {
+            tempNumber.mapIndexed { index, c ->
+                if ((index) % 4 == 0 && index != 0) {
+                    append(" ")
+                }
+                append(c)
             }
-            s.append(c)
         }
 
-        val name = "$lastname, $firstname ${if(middlename!=null && !middlename.isEmpty())middlename + " " else "" }"
-        val bal = DecimalFormat("#,##0.00").format(balance.toBigDecimal().setScale(2,RoundingMode.DOWN))
 
-        println("$s | $name| Prepaid Card | $currency $bal | ${if(isMinor) "MINOR" else "NON-MINOR"}")
+        val fullname = StringBuilder().apply {
+            append(lastname)
+            append(", ")
+            append(firstname)
+
+            if (!middlename.isNullOrBlank()) {
+                append(" ")
+                append(middlename.get(0))
+
+                if (middlename.contains(' ')) {
+                    middlename.forEachIndexed { index, c ->
+                        if (c.equals(' ')) {
+                            append(middlename.get(index + 1).uppercaseChar())
+                        }
+                    }
+                }
+            }
+        }.toString()
+
+        val bal = balance.toBigDecimal().setScale(2, RoundingMode.DOWN)
+        val formattedBalance = DecimalFormat("#,##0.00").format(bal)
+
+        println("$formattedCardNumber | $fullname | Prepaid Card | $currency $formattedBalance | ${if (isMinor) "MINOR" else "NON-MINOR"}")
     }
 
 

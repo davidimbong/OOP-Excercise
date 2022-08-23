@@ -1,26 +1,53 @@
 import java.math.RoundingMode
 import java.text.DecimalFormat
-import java.text.NumberFormat
-import java.util.*
 
-class Savings(firstname: String, middlename: String?, lastname: String, currency: String, balance: String, dateOfBirth: String, accountNumber: String):
-    Account( firstname, middlename, lastname, currency, balance, dateOfBirth) {
+class Savings(
+    firstname: String,
+    middlename: String?,
+    lastname: String,
+    currency: String,
+    balance: String,
+    dateOfBirth: String,
+    accountNumber: String
+) :
+    Account(firstname, middlename, lastname, currency, balance, dateOfBirth) {
 
-    val x = accountNumber.toString()
-    val s:StringBuilder = java.lang.StringBuilder("")
+    private val tempNumber = accountNumber
 
     override fun getFormattedDetails() {
-        x.mapIndexed{ index, c ->
-            if ((index)%4 ==0 && index != 0){
-                s.append(" ")
+
+        val formattedAccNumber: StringBuilder = java.lang.StringBuilder("").apply {
+            tempNumber.mapIndexed { index, c ->
+                if ((index) % 4 == 0 && index != 0) {
+                    append(" ")
+                }
+                append(c)
             }
-            s.append(c)
         }
 
-        val name = "$lastname, $firstname ${if(middlename!=null && !middlename.isEmpty())middlename + " " else "" }"
-        val bal = DecimalFormat("#,##0.00").format(balance.toBigDecimal().setScale(2, RoundingMode.DOWN))
+        val fullname = StringBuilder().apply {
+            append(lastname)
+            append(", ")
+            append(firstname)
 
-        println("$s | $name| Savings Account | $currency $bal | ${if(isMinor) "MINOR" else "NON-MINOR"}")
+            if (!middlename.isNullOrBlank()) {
+                append(" ")
+                append(middlename.get(0))
+
+                if (middlename.contains(' ')) {
+                    middlename.forEachIndexed { index, c ->
+                        if (c.equals(' ')) {
+                            append(middlename.get(index + 1).uppercaseChar())
+                        }
+                    }
+                }
+            }
+        }.toString()
+
+        val bal = balance.toBigDecimal().setScale(2, RoundingMode.DOWN)
+        val formattedBalance = DecimalFormat("#,##0.00").format(bal)
+
+        println("$formattedAccNumber | $fullname | Savings Account | $currency $formattedBalance | ${if (isMinor) "MINOR" else "NON-MINOR"}")
     }
 
 }
