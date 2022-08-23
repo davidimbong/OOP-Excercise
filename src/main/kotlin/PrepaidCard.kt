@@ -1,8 +1,5 @@
 import java.math.RoundingMode
 import java.text.DecimalFormat
-import java.text.NumberFormat
-import kotlin.math.roundToInt
-
 class PrepaidCard(
     firstname: String,
     middlename: String?,
@@ -10,16 +7,15 @@ class PrepaidCard(
     currency: String,
     balance: String,
     dateOfBirth: String,
-    cardNumber: String
+    val cardNumber: String
 ) :
     Account(firstname, middlename, lastname, currency, balance, dateOfBirth) {
 
-    private val tempNumber = cardNumber
-
     override fun getFormattedDetails() {
 
+
         val formattedCardNumber: StringBuilder = java.lang.StringBuilder("").apply {
-            tempNumber.mapIndexed { index, c ->
+            cardNumber.mapIndexed { index, c ->
                 if ((index) % 4 == 0 && index != 0) {
                     append(" ")
                 }
@@ -35,12 +31,12 @@ class PrepaidCard(
 
             if (!middlename.isNullOrBlank()) {
                 append(" ")
-                append(middlename.get(0))
+                append(middlename[0])
 
                 if (middlename.contains(' ')) {
                     middlename.forEachIndexed { index, c ->
-                        if (c.equals(' ')) {
-                            append(middlename.get(index + 1).uppercaseChar())
+                        if (c == ' ') {
+                            append(middlename[index + 1].uppercaseChar())
                         }
                     }
                 }

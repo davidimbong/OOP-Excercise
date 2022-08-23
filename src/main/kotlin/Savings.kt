@@ -8,16 +8,13 @@ class Savings(
     currency: String,
     balance: String,
     dateOfBirth: String,
-    accountNumber: String
+    val accountNumber: String
 ) :
     Account(firstname, middlename, lastname, currency, balance, dateOfBirth) {
-
-    private val tempNumber = accountNumber
-
     override fun getFormattedDetails() {
 
         val formattedAccNumber: StringBuilder = java.lang.StringBuilder("").apply {
-            tempNumber.mapIndexed { index, c ->
+            accountNumber.mapIndexed { index, c ->
                 if ((index) % 4 == 0 && index != 0) {
                     append(" ")
                 }
@@ -32,12 +29,12 @@ class Savings(
 
             if (!middlename.isNullOrBlank()) {
                 append(" ")
-                append(middlename.get(0))
+                append(middlename[0])
 
                 if (middlename.contains(' ')) {
                     middlename.forEachIndexed { index, c ->
-                        if (c.equals(' ')) {
-                            append(middlename.get(index + 1).uppercaseChar())
+                        if (c == ' ') {
+                            append(middlename[index + 1].uppercaseChar())
                         }
                     }
                 }
