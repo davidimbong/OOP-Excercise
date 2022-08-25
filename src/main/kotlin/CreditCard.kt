@@ -15,21 +15,21 @@ class CreditCard(
 
     override fun getFormattedDetails() {
 
-        val formattedCardNumber = StringHelper.separateString(cardNumber, 4)
+        val formattedCardNumber = cardNumber.separateString(4)
 
         val fullname = StringBuilder().apply {
             append(lastname)
             append(", ")
             append(firstname)
 
-            if (!middlename.isNullOrBlank())
+            if (!middlename.isNullOrBlank()) {
                 append(" ")
-            append(StringHelper.getFirstCharPerWord(middlename!!).uppercase())
-
+                append(middlename.getFirstCharPerWord())
+            }
         }.toString()
 
-        val formattedBalance = StringHelper.convertToBigDecimal(availableBalance)
-        val formattedLimit = StringHelper.convertToBigDecimal(creditLimit)
+        val formattedBalance = availableBalance.convertToBigDecimal()
+        val formattedLimit = creditLimit.convertToBigDecimal()
 
         val balanceOutOf = "$currency $formattedBalance out of $currency $formattedLimit"
 

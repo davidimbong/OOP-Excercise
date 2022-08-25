@@ -13,20 +13,20 @@ class Savings(
     Account(firstname, middlename, lastname, currency, balance, dateOfBirth) {
     override fun getFormattedDetails() {
 
-        val formattedAccNumber = StringHelper.separateString(accountNumber, 4)
+        val formattedAccNumber = accountNumber.separateString(4)
 
         val fullname = StringBuilder().apply {
             append(lastname)
             append(", ")
             append(firstname)
 
-            if (!middlename.isNullOrBlank())
+            if (!middlename.isNullOrBlank()) {
                 append(" ")
-                append(StringHelper.getFirstCharPerWord(middlename!!).uppercase())
-
+                append(middlename.getFirstCharPerWord())
+            }
         }.toString()
 
-        val formattedBalance = StringHelper.convertToBigDecimal(balance)
+        val formattedBalance = balance.convertToBigDecimal()
 
         println("$formattedAccNumber | $fullname | Savings Account | $currency $formattedBalance | ${if (isMinor) "MINOR" else "NON-MINOR"}")
     }
