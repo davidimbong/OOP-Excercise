@@ -11,7 +11,7 @@ fun String.getFirstCharPerWord(): String {
     return sb.toString()
 }
 
-fun String.separateString( count: Int): String {
+fun String.separateString(count: Int): String {
     val sb = StringBuilder()
     this.forEachIndexed() { index, c ->
         if ((index) % count == 0) {
@@ -23,9 +23,14 @@ fun String.separateString( count: Int): String {
     return sb.toString()
 }
 
-fun String.convertToBigDecimal(): String {
+fun String.convertToMoneyFormat(currency: String): String {
     val formatter = DecimalFormat("#,##0.00")
     val num = this.toBigDecimal().setScale(2, RoundingMode.DOWN)
 
-    return formatter.format(num)
+    val sb = StringBuilder().apply {
+        append("currency ")
+        append(formatter.format(num))
+    }.toString()
+
+    return sb
 }

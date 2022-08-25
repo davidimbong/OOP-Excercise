@@ -28,10 +28,10 @@ class CreditCard(
             }
         }.toString()
 
-        val formattedBalance = availableBalance.convertToBigDecimal()
-        val formattedLimit = creditLimit.convertToBigDecimal()
+        val formattedBalance = availableBalance.convertToMoneyFormat(currency)
+        val formattedLimit = creditLimit.convertToMoneyFormat(currency)
 
-        val balanceOutOf = "$currency $formattedBalance out of $currency $formattedLimit"
+        val balanceOutOf = "$formattedBalance out of $formattedLimit"
 
         val formattedExpiryD = StringBuilder()
         expiryDate.forEachIndexed() { index, c ->

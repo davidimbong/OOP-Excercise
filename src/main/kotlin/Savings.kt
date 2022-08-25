@@ -26,9 +26,9 @@ class Savings(
             }
         }.toString()
 
-        val formattedBalance = balance.convertToBigDecimal()
+        val formattedBalance = balance.convertToMoneyFormat(currency)
 
-        println("$formattedAccNumber | $fullname | Savings Account | $currency $formattedBalance | ${if (isMinor) "MINOR" else "NON-MINOR"}")
+        println("$formattedAccNumber | $fullname | Savings Account | $formattedBalance | ${if (isMinor) "MINOR" else "NON-MINOR"}")
     }
 
 }

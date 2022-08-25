@@ -9,8 +9,7 @@ class PrepaidCard(
     balance: String,
     dateOfBirth: String,
     val cardNumber: String
-) :
-    Account(firstname, middlename, lastname, currency, balance, dateOfBirth) {
+) : Account(firstname, middlename, lastname, currency, balance, dateOfBirth) {
 
     override fun getFormattedDetails() {
 
@@ -27,9 +26,9 @@ class PrepaidCard(
             }
         }.toString()
 
-        val formattedBalance = balance.convertToBigDecimal()
+        val formattedBalance = balance.convertToMoneyFormat(currency)
 
-        println("$formattedCardNumber | $fullname | Prepaid Card | $currency $formattedBalance | ${if (isMinor) "MINOR" else "NON-MINOR"}")
+        println("$formattedCardNumber | $fullname | Prepaid Card | $formattedBalance | ${if (isMinor) "MINOR" else "NON-MINOR"}")
     }
 
 
