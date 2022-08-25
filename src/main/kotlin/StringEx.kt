@@ -11,11 +11,11 @@ fun String.getFirstCharPerWord(): String {
     return sb.toString()
 }
 
-fun String.separateString(count: Int): String {
+fun String.separateString(count: Int, separator: Char): String {
     val sb = StringBuilder()
     this.forEachIndexed { index, c ->
-        if ((index) % count == 0) {
-            sb.append(" ")
+        if ((index) % count == 0 && index!=0) {
+            sb.append(separator)
         }
         sb.append(c)
     }

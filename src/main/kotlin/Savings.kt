@@ -13,7 +13,7 @@ class Savings(
     Account(firstname, middlename, lastname, currency, balance, dateOfBirth) {
     override fun getFormattedDetails() {
 
-        val formattedAccNumber = accountNumber.separateString(4)
+        val formattedAccNumber = accountNumber.separateString(4, ' ')
 
         val fullname = StringBuilder().apply {
             append(lastname)

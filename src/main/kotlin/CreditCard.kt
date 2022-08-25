@@ -1,3 +1,5 @@
+import kotlin.math.exp
+
 class CreditCard(
     firstname: String,
     middlename: String?,
@@ -15,7 +17,7 @@ class CreditCard(
 
     override fun getFormattedDetails() {
 
-        val formattedCardNumber = cardNumber.separateString(4)
+        val formattedCardNumber = cardNumber.separateString(4, ' ')
 
         val fullname = StringBuilder().apply {
             append(lastname)
@@ -33,13 +35,7 @@ class CreditCard(
 
         val balanceOutOf = "$formattedBalance out of $formattedLimit"
 
-        val formattedExpiryD = StringBuilder()
-        expiryDate.forEachIndexed() { index, c ->
-            if (index == 2) {
-                formattedExpiryD.append("/")
-            }
-            formattedExpiryD.append(c)
-        }.toString()
+        val formattedExpiryD = expiryDate.separateString(2, '/')
 
         println("$formattedCardNumber | $fullname | Credit Card | $balanceOutOf | $formattedExpiryD")
     }

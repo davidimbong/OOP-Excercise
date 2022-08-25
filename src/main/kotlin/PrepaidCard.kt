@@ -13,7 +13,7 @@ class PrepaidCard(
 
     override fun getFormattedDetails() {
 
-        val formattedCardNumber = cardNumber.separateString(4)
+        val formattedCardNumber = cardNumber.separateString(4, ' ')
 
         val fullname = StringBuilder().apply {
             append(lastname)
