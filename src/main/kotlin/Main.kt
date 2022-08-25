@@ -80,8 +80,7 @@ fun main(args: Array<String>) {
             availableBalance = "250000.0",
             creditLimit = "300000",
             expiryDate = "0425"
-        ),
-    )
+        )
+    ).forEach { it.getFormattedDetails() }
 
-    list.forEach { it.getFormattedDetails() }
 }

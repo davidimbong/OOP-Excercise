@@ -10,8 +10,7 @@ class CreditCard(
     private val expiryDate: String,
     private val availableBalance: String,
     private val creditLimit: String
-) :
-    Account(firstname, middlename, lastname, currency, balance, dateOfBirth) {
+) : Account(firstname, middlename, lastname, currency, balance, dateOfBirth) {
 
     override fun getFormattedDetails() {
 

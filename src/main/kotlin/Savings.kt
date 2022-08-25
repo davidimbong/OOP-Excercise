@@ -6,8 +6,7 @@ class Savings(
     balance: String,
     dateOfBirth: String,
     private val accountNumber: String
-) :
-    Account(firstname, middlename, lastname, currency, balance, dateOfBirth) {
+) : Account(firstname, middlename, lastname, currency, balance, dateOfBirth) {
     override fun getFormattedDetails() {
 
         val formattedAccNumber = accountNumber.separateString(4, ' ')

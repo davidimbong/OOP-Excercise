@@ -2,19 +2,19 @@ import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
 abstract class Account(
-    internal val firstname: String,
-    internal val middlename: String?,
-    internal val lastname: String,
-    internal val currency: String,
-    internal val balance: String,
-    internal val dateOfBirth: String
+    protected val firstname: String,
+    protected val middlename: String?,
+    protected val lastname: String,
+    protected val currency: String,
+    protected val balance: String,
+    protected val dateOfBirth: String
 ) {
 
     abstract fun getFormattedDetails()
 
-    val birthday: LocalDate = LocalDate.parse(dateOfBirth, DateTimeFormatter.ofPattern("yyyy/MM/dd"))
+    protected val birthday: LocalDate = LocalDate.parse(dateOfBirth, DateTimeFormatter.ofPattern("yyyy/MM/dd"))
 
-    val isMinor: String
+    protected val isMinor: String
         get() {
             if (java.time.Period.between(birthday, LocalDate.now()).years < 18) {
                 return "MINOR"
@@ -22,7 +22,7 @@ abstract class Account(
             return "NON-MINOR"
         }
 
-    val fullname = StringBuilder().apply {
+    protected val fullname = StringBuilder().apply {
         append(lastname)
         append(", ")
         append(firstname)
