@@ -10,13 +10,22 @@ abstract class Account(
 
     var birthday: LocalDate = LocalDate.parse(dateOfBirth, DateTimeFormatter.ofPattern("yyyy/MM/dd"))
 
-    val isMinor: Boolean
+    val isMinor: String
         get() {
-            if (java.time.Period.between(birthday, LocalDate.now()).years <= 18) {
-                return true
+            if (java.time.Period.between(birthday, LocalDate.now()).years < 18) {
+                return "MINOR"
             }
-            return false
+            return "NON-MINOR"
         }
 
+    val fullname = StringBuilder().apply {
+        append(lastname)
+        append(", ")
+        append(firstname)
 
+        if (!middlename.isNullOrBlank()) {
+            append(" ")
+            append(middlename.getFirstCharPerWord())
+        }
+    }.toString()
 }

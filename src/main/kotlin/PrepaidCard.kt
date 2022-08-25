@@ -15,20 +15,9 @@ class PrepaidCard(
 
         val formattedCardNumber = cardNumber.separateString(4, ' ')
 
-        val fullname = StringBuilder().apply {
-            append(lastname)
-            append(", ")
-            append(firstname)
-
-            if (!middlename.isNullOrBlank()) {
-                append(" ")
-                append(middlename.getFirstCharPerWord())
-            }
-        }.toString()
-
         val formattedBalance = balance.convertToMoneyFormat(currency)
 
-        println("$formattedCardNumber | $fullname | Prepaid Card | $formattedBalance | ${if (isMinor) "MINOR" else "NON-MINOR"}")
+        println("$formattedCardNumber | $fullname | Prepaid Card | $formattedBalance | $isMinor")
     }
 
 

@@ -14,7 +14,7 @@ fun String.getFirstCharPerWord(): String {
 fun String.separateString(count: Int, separator: Char): String {
     val sb = StringBuilder()
     this.forEachIndexed { index, c ->
-        if ((index) % count == 0 && index!=0) {
+        if ((index) % count == 0 && index != 0) {
             sb.append(separator)
         }
         sb.append(c)

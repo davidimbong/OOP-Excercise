@@ -15,20 +15,9 @@ class Savings(
 
         val formattedAccNumber = accountNumber.separateString(4, ' ')
 
-        val fullname = StringBuilder().apply {
-            append(lastname)
-            append(", ")
-            append(firstname)
-
-            if (!middlename.isNullOrBlank()) {
-                append(" ")
-                append(middlename.getFirstCharPerWord())
-            }
-        }.toString()
-
         val formattedBalance = balance.convertToMoneyFormat(currency)
 
-        println("$formattedAccNumber | $fullname | Savings Account | $formattedBalance | ${if (isMinor) "MINOR" else "NON-MINOR"}")
+        println("$formattedAccNumber | $fullname | Savings Account | $formattedBalance | $isMinor")
     }
 
 }

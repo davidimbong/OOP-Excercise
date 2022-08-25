@@ -19,20 +19,8 @@ class CreditCard(
 
         val formattedCardNumber = cardNumber.separateString(4, ' ')
 
-        val fullname = StringBuilder().apply {
-            append(lastname)
-            append(", ")
-            append(firstname)
-
-            if (!middlename.isNullOrBlank()) {
-                append(" ")
-                append(middlename.getFirstCharPerWord())
-            }
-        }.toString()
-
         val formattedBalance = availableBalance.convertToMoneyFormat(currency)
         val formattedLimit = creditLimit.convertToMoneyFormat(currency)
-
         val balanceOutOf = "$formattedBalance out of $formattedLimit"
 
         val formattedExpiryD = expiryDate.separateString(2, '/')

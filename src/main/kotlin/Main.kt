@@ -25,7 +25,7 @@ fun main(args: Array<String>) {
             lastname = "Alkalde",
             currency = "PHP",
             balance = "12523.62",
-            dateOfBirth = "2004/04/01",
+            dateOfBirth = "2004/08/29",
             accountNumber = "6002444422"
         ),
         Savings(
