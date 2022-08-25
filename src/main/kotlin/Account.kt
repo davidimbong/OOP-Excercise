@@ -2,17 +2,17 @@ import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
 abstract class Account(
-    val firstname: String,
-    val middlename: String?,
-    val lastname: String,
-    val currency: String,
-    val balance: String,
-    val dateOfBirth: String
+    internal val firstname: String,
+    internal val middlename: String?,
+    internal val lastname: String,
+    internal val currency: String,
+    internal val balance: String,
+    internal val dateOfBirth: String
 ) {
 
     abstract fun getFormattedDetails()
 
-    var birthday: LocalDate = LocalDate.parse(dateOfBirth, DateTimeFormatter.ofPattern("yyyy/MM/dd"))
+    val birthday: LocalDate = LocalDate.parse(dateOfBirth, DateTimeFormatter.ofPattern("yyyy/MM/dd"))
 
     val isMinor: String
         get() {

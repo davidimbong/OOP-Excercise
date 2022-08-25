@@ -1,6 +1,6 @@
 fun main(args: Array<String>) {
 
-    var list = listOf<Account>(
+    val list = listOf<Account>(
         Savings(
             firstname = "Juan",
             middlename = "De la Cerna",

@@ -1,5 +1,3 @@
-import kotlin.math.exp
-
 class CreditCard(
     firstname: String,
     middlename: String?,
@@ -7,11 +5,11 @@ class CreditCard(
     currency: String,
     balance: String,
     dateOfBirth: String,
-    val cardNumber: String,
-    val cvv: String,
-    val expiryDate: String,
-    val availableBalance: String,
-    val creditLimit: String
+    private val cardNumber: String,
+    private val cvv: String,
+    private val expiryDate: String,
+    private val availableBalance: String,
+    private val creditLimit: String
 ) :
     Account(firstname, middlename, lastname, currency, balance, dateOfBirth) {
 
