@@ -13,16 +13,7 @@ class PrepaidCard(
 
     override fun getFormattedDetails() {
 
-
-        val formattedCardNumber: StringBuilder = java.lang.StringBuilder("").apply {
-            cardNumber.forEachIndexed { index, c ->
-                if ((index) % 4 == 0 && index != 0) {
-                    append(" ")
-                }
-                append(c)
-            }
-        }
-
+        val formattedCardNumber = StringHelper.separateString(cardNumber, 4)
 
         val fullname = StringBuilder().apply {
             append(lastname)
@@ -31,20 +22,11 @@ class PrepaidCard(
 
             if (!middlename.isNullOrBlank()) {
                 append(" ")
-                append(middlename[0])
-
-                if (middlename.contains(' ')) {
-                    middlename.forEachIndexed { index, c ->
-                        if (c == ' ') {
-                            append(middlename[index + 1].uppercaseChar())
-                        }
-                    }
-                }
+                append(StringHelper.getFirstCharPerWord(middlename!!).uppercase())
             }
         }.toString()
 
-        val bal = balance.toBigDecimal().setScale(2, RoundingMode.DOWN)
-        val formattedBalance = DecimalFormat("#,##0.00").format(bal)
+        val formattedBalance = StringHelper.convertToBigDecimal(balance)
 
         println("$formattedCardNumber | $fullname | Prepaid Card | $currency $formattedBalance | ${if (isMinor) "MINOR" else "NON-MINOR"}")
     }

@@ -55,6 +55,32 @@ fun main(args: Array<String>) {
             dateOfBirth = "1995/04/11",
             cardNumber = "9215938644987654"
         ),
+        CreditCard(
+            firstname = "David Maxwell Jai",
+            middlename = "Dotillos",
+            lastname = "Imbong",
+            currency = "PHP",
+            balance = "12036.08",
+            dateOfBirth = "2000/05/18",
+            cardNumber = "0921593864401234",
+            cvv = "563",
+            availableBalance = "17963.92",
+            creditLimit = "30000",
+            expiryDate = "0723"
+        ),
+        CreditCard(
+            firstname = "Time",
+            middlename = "Cook",
+            lastname = "Apple",
+            currency = "PHP",
+            balance = "50000.0",
+            dateOfBirth = "2000/02/28",
+            cardNumber = "4126567899991991",
+            cvv = "693",
+            availableBalance = "250000.0",
+            creditLimit = "300000",
+            expiryDate = "0425"
+        ),
     )
 
     list.forEach { it.getFormattedDetails() }
