@@ -10,7 +10,6 @@ class Savings(
     override fun getFormattedDetails() {
 
         val formattedAccNumber = accountNumber.separateString(4, ' ')
-        val formattedBalance = balance.convertToMoneyFormat(currency)
 
         println("$formattedAccNumber | $fullname | Savings Account | $formattedBalance | $isMinor")
     }

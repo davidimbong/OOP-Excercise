@@ -11,7 +11,6 @@ class PrepaidCard(
     override fun getFormattedDetails() {
 
         val formattedCardNumber = cardNumber.separateString(4, ' ')
-        val formattedBalance = balance.convertToMoneyFormat(currency)
 
         println("$formattedCardNumber | $fullname | Prepaid Card | $formattedBalance | $isMinor")
     }

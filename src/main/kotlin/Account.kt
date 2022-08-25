@@ -2,14 +2,13 @@ import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
 abstract class Account(
-    protected val firstname: String,
-    protected val middlename: String?,
+    var firstname: String,
+    var middlename: String?,
     protected val lastname: String,
     protected val currency: String,
     protected val balance: String,
     protected val dateOfBirth: String
 ) {
-
     abstract fun getFormattedDetails()
 
     protected val birthday: LocalDate = LocalDate.parse(dateOfBirth, DateTimeFormatter.ofPattern("yyyy/MM/dd"))
@@ -22,14 +21,31 @@ abstract class Account(
             return "NON-MINOR"
         }
 
-    protected val fullname = StringBuilder().apply {
-        append(lastname)
-        append(", ")
-        append(firstname)
+    protected val formattedBalance = balance.convertToMoneyFormat(currency)
 
-        if (!middlename.isNullOrBlank()) {
-            append(" ")
-            append(middlename.getFirstCharPerWord())
+    val fullname: String
+        get() {
+            return StringBuilder().apply {
+                append(lastname)
+                append(", ")
+                append(firstname)
+
+                if (!middlename.isNullOrBlank()) {
+                    append(" ")
+                    append(middlename!!.getFirstCharPerWord())
+                }
+            }.toString()
         }
-    }.toString()
+    
+    //    var fullname = StringBuilder().apply {
+//        append(lastname)
+//        append(", ")
+//        append(firstname)
+//
+//        if (!middlename.isNullOrBlank()) {
+//            append(" ")
+//            append(middlename!!.getFirstCharPerWord())
+//        }
+//    }.toString()
+
 }

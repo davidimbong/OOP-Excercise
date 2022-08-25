@@ -15,13 +15,9 @@ class CreditCard(
     override fun getFormattedDetails() {
 
         val formattedCardNumber = cardNumber.separateString(4, ' ')
-
-        val formattedBalance = availableBalance.convertToMoneyFormat(currency)
         val formattedLimit = creditLimit.convertToMoneyFormat(currency)
-        val balanceOutOf = "$formattedBalance out of $formattedLimit"
-
         val formattedExpiryD = expiryDate.separateString(2, '/')
 
-        println("$formattedCardNumber | $fullname | Credit Card | $balanceOutOf | $formattedExpiryD")
+        println("$formattedCardNumber | $fullname | Credit Card | $formattedBalance out of $formattedLimit | $formattedExpiryD")
     }
 }
