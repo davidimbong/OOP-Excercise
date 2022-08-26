@@ -2,12 +2,12 @@ import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
 abstract class Account(
-    var firstname: String,
-    var middlename: String?,
-    protected val lastname: String,
-    protected val currency: String,
-    protected val balance: String,
-    protected val dateOfBirth: String
+     val firstname: String,
+     val middlename: String?,
+     val lastname: String,
+     val currency: String,
+     val balance: String,
+     val dateOfBirth: String
 ) {
     abstract fun getFormattedDetails()
 
@@ -36,7 +36,7 @@ abstract class Account(
                 }
             }.toString()
         }
-    
+
     //    var fullname = StringBuilder().apply {
 //        append(lastname)
 //        append(", ")

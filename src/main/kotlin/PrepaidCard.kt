@@ -5,8 +5,9 @@ class PrepaidCard(
     currency: String,
     balance: String,
     dateOfBirth: String,
-    private val cardNumber: String
-) : Account(firstname, middlename, lastname, currency, balance, dateOfBirth) {
+    override val cardNumber: String,
+    override val expiryDate: String
+) :  Account(firstname, middlename, lastname, currency, balance, dateOfBirth), cardDisplayable {
 
     override fun getFormattedDetails() {
 
