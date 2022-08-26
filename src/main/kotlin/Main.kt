@@ -90,15 +90,9 @@ fun main(args: Array<String>) {
 
     val list2 = mutableListOf<CardDisplayable>()
 
-    list.filterIsInstance<CreditCard>().forEach {
+    list.filterIsInstance<CardDisplayable>().forEach {
         list2.add(it)
     }
 
-    list.filterIsInstance<PrepaidCard>().forEach {
-        list2.add(it)
-    }
-
-    list2.forEach{
-        it.printCardDetails()
-    }
+    list2.forEach { it.printCardDetails() }
 }
