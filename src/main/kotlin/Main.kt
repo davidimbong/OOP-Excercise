@@ -88,11 +88,9 @@ fun main(args: Array<String>) {
         )
     )//.forEach { it.getFormattedDetails() }
 
-    val list2 = mutableListOf<CardDisplayable>()
-
-    list.filterIsInstance<CardDisplayable>().forEach {
-        list2.add(it)
-    }
-
-    list2.forEach { it.printCardDetails() }
+    val list2 = mutableListOf<CardDisplayable>().apply {
+        list.filterIsInstance<CardDisplayable>().forEach{
+            add(it)
+        }
+    }.forEach { it.printCardDetails() }
 }
