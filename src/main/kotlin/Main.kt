@@ -10,6 +10,7 @@ fun main(args: Array<String>) {
 
     val list = mutableListOf<Account>()
     val symbols = "0123456789/?!:;%"
+    val numbers = "0123456789"
 
     //declaring the variables in the loop to allow interoperability with other try catcg
     var accType: String
@@ -178,11 +179,12 @@ fun main(args: Array<String>) {
                     print("Card Number: ")
                     cardNumInput = readln()
                     cardNumInput.filter { !it.isWhitespace() }
-                    if (cardNumInput.toFloat() < 0)
-                        throw InputMismatchException("    Card number cannot be negative    ")
                     if (cardNumInput.length != 16)
                         throw InputMismatchException("  Input does not ammount to 16 digits  ")
-                    else break
+                    else if (cardNumInput.all { it in numbers })
+                        break
+                    else
+                        throw NumberFormatException()
                 } catch (e: NumberFormatException) {
                     println("\n======================")
                     println("  Only input numbers  ")
@@ -304,12 +306,13 @@ fun main(args: Array<String>) {
                 try {
                     print("Account Number(no space): ")
                     accNumInput = readln()
-                    accNumInput.filter { !it.isWhitespace() }
-                    if (accNumInput.toFloat() < 0)
-                        throw InputMismatchException("   Account number cannot be negative   ")
+
                     if (accNumInput.length != 10)
                         throw InputMismatchException("  Input does not ammount to 10 digits  ")
-                    else break
+                    else if (accNumInput.all { it in numbers })
+                        break
+                    else
+                        throw NumberFormatException()
                 } catch (e: NumberFormatException) {
                     println("\n======================")
                     println("  Only input numbers  ")
