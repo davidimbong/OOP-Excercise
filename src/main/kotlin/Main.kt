@@ -5,6 +5,7 @@ import java.time.format.DateTimeFormatter
 import java.time.format.DateTimeParseException
 import java.util.*
 
+@Suppress("LABEL_NAME_CLASH")
 fun main(args: Array<String>) {
 
     val list = mutableListOf<Account>()
@@ -24,10 +25,8 @@ fun main(args: Array<String>) {
     var cvvInput: String
     var accNumInput: String
 
-    var df = SimpleDateFormat("yyyy/MM/dd")
+    val df = SimpleDateFormat("yyyy/MM/dd")
     df.isLenient = false
-
-    val dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd")
 
     main@ while (true) {
         //choose account
@@ -36,14 +35,12 @@ fun main(args: Array<String>) {
             print("Choose which Account type to Enroll (input first letter only): ")
             accType = readln().uppercase()
 
-            accType = if (accType == "P")
-                "Prepaid Card"
-            else if (accType.equals("C"))
-                "Credit Card"
-            else if (accType.equals("S"))
-                "Savings"
-            else
-                throw IllegalArgumentException("  Please input S C or P only  ")
+            accType = when (accType) {
+                "P" -> "Prepaid Card"
+                "C" -> "Credit Card"
+                "S" -> "Savings"
+                else -> throw IllegalArgumentException("  Please input S C or P only  ")
+            }
         } catch (e: IllegalArgumentException) {
             println("\n==============================")
             println("${e.message}")
@@ -51,7 +48,7 @@ fun main(args: Array<String>) {
             continue
         }
 
-        println("\n\n\n\n==============================   ${accType}   ==============================")
+        println("\n\n\n\n==============================   $accType   ==============================")
         println("Please input the desired information (please follow the format stated if there are any)")
 
 
@@ -82,8 +79,7 @@ fun main(args: Array<String>) {
                 mnameInput = readln()
                 if (mnameInput.any { it in symbols }) {
                     throw InputMismatchException("  Name cannot contain numbers or symbols  ")
-                }
-                else break
+                } else break
             } catch (e: InputMismatchException) {
                 println("\n==========================================")
                 println("${e.message}")
@@ -117,15 +113,21 @@ fun main(args: Array<String>) {
             try {
                 print("Birthday (YYYY/MM/DD): ")
                 bdayInput = readln()
+                LocalDate.parse(bdayInput, DateTimeFormatter.ofPattern("yyyy/MM/dd"))
                 if (df.parse(bdayInput).after(SimpleDateFormat("yyyy-MM-dd").parse(LocalDate.now().toString())))
                     throw InputMismatchException("Enter a valid birthday")
                 else
                     break
-            } catch (e: ParseException) {
+            } catch (e: DateTimeParseException) {
                 println("\n=======================================")
                 println("  Input date in Year/month/day format  ")
                 println("          Example 2022/08/30  ")
                 println("=======================================\n")
+                continue
+            }catch (e: ParseException) {
+                println("\n=============================")
+                println("  Please enter a valid date  ")
+                println("=============================\n")
                 continue
             } catch (e: InputMismatchException) {
                 println("\n======================================")
@@ -140,11 +142,11 @@ fun main(args: Array<String>) {
             try {
                 print("Currency (USD, PHP, JPY): ")
                 currInput = readln().uppercase()
-                if (currInput.length != 3 || currInput.any { it in symbols }) {
-                    throw InputMismatchException("  Select only one of the choices  ")
-                } else if (currInput == "USD" || currInput == "JPY" || currInput == "PHP" ) {
+                if (currInput == "USD" || currInput == "JPY" || currInput == "PHP") {
                     break
                 }
+                else
+                    throw InputMismatchException("  Select only one of the choices  ")
             } catch (e: InputMismatchException) {
                 println("\n==================================")
                 println("${e.message}")
@@ -158,7 +160,7 @@ fun main(args: Array<String>) {
             try {
                 print("Balance: ")
                 balanceInput = readln()
-                if(balanceInput.toBigDecimal() > "0".toBigDecimal())
+                balanceInput.toBigDecimal()
                 break
             } catch (e: NumberFormatException) {
                 println("\n======================")
@@ -239,7 +241,7 @@ fun main(args: Array<String>) {
                     try {
                         print("Credit Limit: ")
                         creditLimitInput = readln()
-                        if(creditLimitInput.toBigDecimal() > "0".toBigDecimal())
+                        if (creditLimitInput.toBigDecimal() > "0".toBigDecimal())
                             break
                         else
                             throw InputMismatchException("  Credit limit must be above 0  ")
@@ -248,8 +250,7 @@ fun main(args: Array<String>) {
                         println("  Only input numbers  ")
                         println("======================\n")
                         continue
-                    }
-                    catch (e: InputMismatchException){
+                    } catch (e: InputMismatchException) {
                         println("\n================================")
                         println(e.message)
                         println("================================\n")
@@ -334,18 +335,19 @@ fun main(args: Array<String>) {
             try {
                 println("(E) - Enroll another account/card \n(P) - Print")
                 print("What do you want to do next: ")
-                var finalInput = readln().uppercase()
+                val finalInput = readln().uppercase()
 
-                if (finalInput == "E")
+                if (finalInput == "E") {
+                    println("\n\n\n")
                     break
-                else if (finalInput == "P")
+                } else if (finalInput == "P")
                     while (true) {
                         try {
-                            if (accType == "Credit Card" || accType.equals("Prepaid Card")) {
+                            if (accType == "Credit Card" || accType == "Prepaid Card") {
                                 print("(C) - Print card details \n(A) - Print account details\n")
                                 print("What do you want to print: ")
 
-                                var printInput = readln().uppercase()
+                                val printInput = readln().uppercase()
                                 if (printInput == "C") {
                                     mutableListOf<CardDisplayable>().apply {
                                         list.filterIsInstance<CardDisplayable>().forEach {
@@ -377,7 +379,6 @@ fun main(args: Array<String>) {
                 println("==============================\n")
                 continue
             }
-            println("\n\n\n")
         }
 
     }
