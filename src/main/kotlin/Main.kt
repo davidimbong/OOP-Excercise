@@ -177,8 +177,9 @@ fun main(args: Array<String>) {
                 try {
                     print("Card Number: ")
                     cardNumInput = readln()
-                    cardNumInput.toFloat()
                     cardNumInput.filter { !it.isWhitespace() }
+                    if (cardNumInput.toFloat() < 0)
+                        throw InputMismatchException("    Card number cannot be negative    ")
                     if (cardNumInput.length != 16)
                         throw InputMismatchException("  Input does not ammount to 16 digits  ")
                     else break
@@ -303,7 +304,9 @@ fun main(args: Array<String>) {
                 try {
                     print("Account Number(no space): ")
                     accNumInput = readln()
-                    accNumInput.toFloat()
+                    accNumInput.filter { !it.isWhitespace() }
+                    if (accNumInput.toFloat() < 0)
+                        throw InputMismatchException("   Account number cannot be negative   ")
                     if (accNumInput.length != 10)
                         throw InputMismatchException("  Input does not ammount to 10 digits  ")
                     else break
