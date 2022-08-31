@@ -13,7 +13,7 @@ class PrepaidCard(
 
         val formattedCardNumber = cardNumber.separateString(4, ' ')
 
-        println("$formattedCardNumber | $fullname | Prepaid Card | $formattedBalance | $isMinor")
+        println("$formattedCardNumber |$fullname | Prepaid Card | $formattedBalance | $isMinor")
     }
 
 

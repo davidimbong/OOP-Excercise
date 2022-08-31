@@ -18,6 +18,6 @@ class CreditCard(
         val formattedLimit = creditLimit.convertToMoneyFormat(currency)
         val formattedExpiryD = expiryDate.separateString(2, '/')
 
-        println("$formattedCardNumber | $fullname | Credit Card | $formattedBalance out of $formattedLimit | $formattedExpiryD")
+        println("$formattedCardNumber |$fullname | Credit Card | $formattedBalance out of $formattedLimit | $formattedExpiryD")
     }
 }

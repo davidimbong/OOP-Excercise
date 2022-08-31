@@ -26,9 +26,9 @@ abstract class Account(
     val fullname: String
         get() {
             return StringBuilder().apply {
-                append(lastname)
-                append(", ")
-                append(firstname)
+                append(lastname.uppercaseFirstChar())
+                append(",")
+                append(firstname.uppercaseFirstChar())
 
                 if (!middlename.isNullOrBlank()) {
                     append(" ")

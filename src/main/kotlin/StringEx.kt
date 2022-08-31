@@ -5,7 +5,18 @@ fun String.getFirstCharPerWord(): String {
     val list = this.split(' ')
     val sb = StringBuilder()
     list.forEach {
-        sb.append(it[0])
+        sb.append(it[0].uppercaseChar())
+    }
+
+    return sb.toString()
+}
+
+fun String.uppercaseFirstChar(): String {
+    val list = this.split(' ')
+    val sb = StringBuilder()
+    list.forEach {
+        sb.append(" ")
+        sb.append(it.replaceFirstChar { it.uppercaseChar() })
     }
 
     return sb.toString()
@@ -28,7 +39,7 @@ fun String.convertToMoneyFormat(currency: String): String {
     val num = this.toBigDecimal().setScale(2, RoundingMode.DOWN)
 
     val sb = StringBuilder().apply {
-        append("$currency ")
+        append("${currency.uppercase()} ")
         append(formatter.format(num))
     }.toString()
 
