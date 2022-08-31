@@ -1,10 +1,9 @@
-import java.lang.IllegalArgumentException
 import java.text.ParseException
+import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.time.format.DateTimeParseException
-import java.util.InputMismatchException
-import javax.swing.text.DateFormatter
+import java.util.*
 
 fun main(args: Array<String>) {
 
@@ -24,6 +23,11 @@ fun main(args: Array<String>) {
     var creditLimitInput: String
     var cvvInput: String
     var accNumInput: String
+
+    var df = SimpleDateFormat("yyyy/MM/dd")
+    df.isLenient = false
+
+    val dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd")
 
     main@ while (true) {
         //choose account
@@ -56,14 +60,16 @@ fun main(args: Array<String>) {
             try {
                 print("First name: ")
                 fnameInput = readln()
-                if (fnameInput.any() { it in symbols }) {
-                    throw InputMismatchException("  Name cannot contain numbers or symbols  ")
-                } else
+                if (fnameInput.isBlank())
+                    throw InputMismatchException("   First name cannot be blank or empty   ")
+                else if (fnameInput.any { it in symbols })
+                    throw InputMismatchException("  Name cannot contain numbers or symbols ")
+                else
                     break
             } catch (e: InputMismatchException) {
-                println("\n==========================================")
+                println("\n=========================================")
                 println("${e.message}")
-                println("==========================================\n")
+                println("===========================================\n")
                 continue
             }
         }
@@ -74,9 +80,10 @@ fun main(args: Array<String>) {
             try {
                 print("Middle name (press enter to skip): ")
                 mnameInput = readln()
-                if (mnameInput.any() { it in symbols }) {
+                if (mnameInput.any { it in symbols }) {
                     throw InputMismatchException("  Name cannot contain numbers or symbols  ")
-                } else break
+                }
+                else break
             } catch (e: InputMismatchException) {
                 println("\n==========================================")
                 println("${e.message}")
@@ -91,9 +98,11 @@ fun main(args: Array<String>) {
             try {
                 print("Last name: ")
                 lnameInput = readln()
-                if (lnameInput.any() { it in symbols }) {
+                if (lnameInput.isBlank())
+                    throw InputMismatchException("   Last name cannot be blank or empty   ")
+                else if (lnameInput.isBlank() || lnameInput.any { it in symbols })
                     throw InputMismatchException("  Name cannot contain numbers or symbols  ")
-                } else break
+                else break
             } catch (e: InputMismatchException) {
                 println("\n==========================================")
                 println("${e.message}")
@@ -108,13 +117,20 @@ fun main(args: Array<String>) {
             try {
                 print("Birthday (YYYY/MM/DD): ")
                 bdayInput = readln()
-                LocalDate.parse(bdayInput, DateTimeFormatter.ofPattern("yyyy/MM/dd"))
-                break
-            } catch (e: DateTimeParseException) {
+                if (df.parse(bdayInput).after(SimpleDateFormat("yyyy-MM-dd").parse(LocalDate.now().toString())))
+                    throw InputMismatchException("Enter a valid birthday")
+                else
+                    break
+            } catch (e: ParseException) {
                 println("\n=======================================")
                 println("  Input date in Year/month/day format  ")
                 println("          Example 2022/08/30  ")
                 println("=======================================\n")
+                continue
+            } catch (e: InputMismatchException) {
+                println("\n======================================")
+                println("  Birthday must be before today's date")
+                println("======================================\n")
                 continue
             }
         }
@@ -122,17 +138,17 @@ fun main(args: Array<String>) {
         //Currency
         while (true) {
             try {
-                print("Currency (USD, PHP): ")
-                currInput = readln()
-                if (currInput.length != 3 || currInput.any() { it in symbols }) {
-                    throw InputMismatchException("  Currency can only have 3 letters  ")
-                } else {
+                print("Currency (USD, PHP, JPY): ")
+                currInput = readln().uppercase()
+                if (currInput.length != 3 || currInput.any { it in symbols }) {
+                    throw InputMismatchException("  Select only one of the choices  ")
+                } else if (currInput == "USD" || currInput == "JPY" || currInput == "PHP" ) {
                     break
                 }
             } catch (e: InputMismatchException) {
-                println("\n====================================")
+                println("\n==================================")
                 println("${e.message}")
-                println("====================================\n")
+                println("==================================\n")
                 continue
             }
         }
@@ -142,7 +158,7 @@ fun main(args: Array<String>) {
             try {
                 print("Balance: ")
                 balanceInput = readln()
-                balanceInput.toBigDecimal()
+                if(balanceInput.toBigDecimal() > "0".toBigDecimal())
                 break
             } catch (e: NumberFormatException) {
                 println("\n======================")
@@ -160,6 +176,7 @@ fun main(args: Array<String>) {
                     print("Card Number: ")
                     cardNumInput = readln()
                     cardNumInput.toFloat()
+                    cardNumInput.filter { !it.isWhitespace() }
                     if (cardNumInput.length != 16)
                         throw InputMismatchException("  Input does not ammount to 16 digits  ")
                     else break
@@ -181,6 +198,7 @@ fun main(args: Array<String>) {
                     print("Expiry Date (numbers only): ")
                     expDateInput = readln()
                     expDateInput.toInt()
+                    expDateInput.filter { !it.isWhitespace() }
 
                     if (expDateInput.length != 4)
                         throw InputMismatchException("  Input does not amount to 4 digits  ")
@@ -221,12 +239,20 @@ fun main(args: Array<String>) {
                     try {
                         print("Credit Limit: ")
                         creditLimitInput = readln()
-                        creditLimitInput.toBigDecimal()
-                        break
+                        if(creditLimitInput.toBigDecimal() > "0".toBigDecimal())
+                            break
+                        else
+                            throw InputMismatchException("  Credit limit must be above 0  ")
                     } catch (e: NumberFormatException) {
                         println("\n======================")
                         println("  Only input numbers  ")
                         println("======================\n")
+                        continue
+                    }
+                    catch (e: InputMismatchException){
+                        println("\n================================")
+                        println(e.message)
+                        println("================================\n")
                         continue
                     }
                 }
@@ -236,7 +262,8 @@ fun main(args: Array<String>) {
                     try {
                         print("CVV (back of the card): ")
                         cvvInput = readln()
-                        cvvInput.toBigDecimal()
+                        cvvInput.toInt()
+                        cvvInput.filter { !it.isWhitespace() }
                         if (cvvInput.length != 3)
                             throw InputMismatchException("  Input does not ammount to 3 digits  ")
                         else break
@@ -315,7 +342,7 @@ fun main(args: Array<String>) {
                     while (true) {
                         try {
                             if (accType == "Credit Card" || accType.equals("Prepaid Card")) {
-                                print("(C) - Print card details \n(A) - Print account details")
+                                print("(C) - Print card details \n(A) - Print account details\n")
                                 print("What do you want to print: ")
 
                                 var printInput = readln().uppercase()
