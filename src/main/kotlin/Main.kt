@@ -12,6 +12,7 @@ fun main(args: Array<String>) {
     var cardNumInput: String
     var expDateInput: String
 
+
     main@ while (true) {
         val accType = getAccType()
         val fnameInput = getName("First name")
@@ -135,10 +136,10 @@ fun getName(str: String): String {
             name = readln()
             if (name.isBlank() && str != "Middle name")
                 throw InputMismatchException("   $str cannot be blank or empty   ")
-            else if (name.any { it in "0123456789/?!:;%" })
-                throw InputMismatchException("  Name cannot contain numbers or symbols ")
-            else
+            else if (name.matches(Regex("^[\\p{L}\\s]+$")))
                 return name
+            else
+                throw InputMismatchException("  Name cannot contain numbers or symbols ")
         } catch (e: InputMismatchException) {
             println("\n=========================================")
             println("${e.message}")
@@ -230,12 +231,10 @@ fun getAccOrCardNumber(maxLength: Int, type:String): String {
             print("$type Number: ")
             str = readln()
             str = str.filter { !it.isWhitespace() }
-            if (str.length != maxLength)
-                throw InputMismatchException("  Input does not ammount to $maxLength digits  ")
-            else if (str.all { it in "1234567890" })
+           if (str.matches(Regex("^[0-9]{$maxLength}+\$")))
                 return str
             else
-                throw NumberFormatException()
+                throw InputMismatchException("  Input does not amount to 10 digits  ")
         } catch (e: NumberFormatException) {
             println("\n======================")
             println("  Only input numbers  ")
@@ -257,12 +256,10 @@ fun getCVV(): String {
             print("CVV (back of the card): ")
             str = readln()
             str = str.filter { !it.isWhitespace() }
-            if (str.length != 3)
-                throw InputMismatchException("  Input does not ammount to 3 digits  ")
-            else if (str.all { it in "1234567890" })
+            if (str.matches(Regex("^[0-9]{3}+\$")))
                 return str
             else
-                throw NumberFormatException()
+                throw InputMismatchException("  Input does not amount to 3 digits  ")
         } catch (e: NumberFormatException) {
             println("\n======================")
             println("  Only input numbers  ")
