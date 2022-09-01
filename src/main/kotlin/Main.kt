@@ -9,324 +9,59 @@ import java.util.*
 fun main(args: Array<String>) {
 
     val list = mutableListOf<Account>()
-    val symbols = "0123456789/?!:;%"
-    val numbers = "0123456789"
-
-    //declaring the variables in the loop to allow interoperability with other try catcg
-    var accType: String
-    var fnameInput: String
-    var mnameInput: String
-    var lnameInput: String
-    var bdayInput: String
-    var currInput: String
-    var balanceInput: String
     var cardNumInput: String
     var expDateInput: String
-    var creditLimitInput: String
-    var cvvInput: String
-    var accNumInput: String
-
-    val df = SimpleDateFormat("yyyy/MM/dd")
-    val xpFormatter = SimpleDateFormat("MM/yy")
-    df.isLenient = false
 
     main@ while (true) {
-        //choose account
-        try {
-            println("(S) - Savings \n(C) - Credit Card \n(P) - Prepaid Card ")
-            print("Choose which Account type to Enroll (input first letter only): ")
-            accType = readln().uppercase()
+        val accType = getAccType()
+        val fnameInput = getName("First name")
+        val mnameInput = getName("Middle name")
+        val lnameInput = getName("Last name")
+        val bdayInput = getDate("Birthday (YYYY/MM/DD)", "yyyy/MM/dd")
+        val currInput = getCurr()
+        val balanceInput = getMoneyInput("Balance")
 
-            accType = when (accType) {
-                "P" -> "Prepaid Card"
-                "C" -> "Credit Card"
-                "S" -> "Savings"
-                else -> throw IllegalArgumentException("  Please input S C or P only  ")
-            }
-        } catch (e: IllegalArgumentException) {
-            println("\n==============================")
-            println("${e.message}")
-            println("==============================\n")
-            continue
-        }
-
-        println("\n\n\n\n==============================   $accType   ==============================")
-        println("Please input the desired information (please follow the format stated if there are any)")
-
-
-        //first name
-        while (true) {
-            try {
-                print("First name: ")
-                fnameInput = readln()
-                if (fnameInput.isBlank())
-                    throw InputMismatchException("   First name cannot be blank or empty   ")
-                else if (fnameInput.any { it in symbols })
-                    throw InputMismatchException("  Name cannot contain numbers or symbols ")
-                else
-                    break
-            } catch (e: InputMismatchException) {
-                println("\n=========================================")
-                println("${e.message}")
-                println("===========================================\n")
-                continue
-            }
-        }
-
-
-        //middle name
-        while (true) {
-            try {
-                print("Middle name (press enter to skip): ")
-                mnameInput = readln()
-                if (mnameInput.any { it in symbols }) {
-                    throw InputMismatchException("  Name cannot contain numbers or symbols  ")
-                } else break
-            } catch (e: InputMismatchException) {
-                println("\n==========================================")
-                println("${e.message}")
-                println("==========================================\n")
-                continue
-            }
-        }
-
-
-        //last name
-        while (true) {
-            try {
-                print("Last name: ")
-                lnameInput = readln()
-                if (lnameInput.isBlank())
-                    throw InputMismatchException("   Last name cannot be blank or empty   ")
-                else if (lnameInput.isBlank() || lnameInput.any { it in symbols })
-                    throw InputMismatchException("  Name cannot contain numbers or symbols  ")
-                else break
-            } catch (e: InputMismatchException) {
-                println("\n==========================================")
-                println("${e.message}")
-                println("==========================================\n")
-                continue
-            }
-        }
-
-
-        //birthdate
-        while (true) {
-            try {
-                print("Birthday (YYYY/MM/DD): ")
-                bdayInput = readln()
-                LocalDate.parse(bdayInput, DateTimeFormatter.ofPattern("yyyy/MM/dd"))
-                if (df.parse(bdayInput).after(SimpleDateFormat("yyyy-MM-dd").parse(LocalDate.now().toString())))
-                    throw InputMismatchException("Enter a valid birthday")
-                else
-                    break
-            } catch (e: DateTimeParseException) {
-                println("\n=======================================")
-                println("  Input date in Year/month/day format  ")
-                println("          Example 2022/08/30  ")
-                println("=======================================\n")
-                continue
-            } catch (e: ParseException) {
-                println("\n=============================")
-                println("  Please enter a valid date  ")
-                println("=============================\n")
-                continue
-            } catch (e: InputMismatchException) {
-                println("\n======================================")
-                println("  Birthday must be before today's date")
-                println("======================================\n")
-                continue
-            }
-        }
-
-        //Currency
-        while (true) {
-            try {
-                print("Currency (USD, PHP, JPY): ")
-                currInput = readln().uppercase()
-                if (currInput == "USD" || currInput == "JPY" || currInput == "PHP") {
-                    break
-                } else
-                    throw InputMismatchException("  Select only one of the choices  ")
-            } catch (e: InputMismatchException) {
-                println("\n==================================")
-                println("${e.message}")
-                println("==================================\n")
-                continue
-            }
-        }
-
-        //balance
-        while (true) {
-            try {
-                print("Balance: ")
-                balanceInput = readln()
-                balanceInput.toBigDecimal()
-                break
-            } catch (e: NumberFormatException) {
-                println("\n======================")
-                println("  Only input numbers  ")
-                println("======================\n")
-                continue
-            }
-        }
-
-        if (accType == "Prepaid Card" || accType == "Credit Card") {
-
-            //Card Number
-            while (true) {
-                try {
-                    print("Card Number: ")
-                    cardNumInput = readln()
-                    cardNumInput = cardNumInput.filter { !it.isWhitespace() }
-                    if (cardNumInput.length != 16)
-                        throw InputMismatchException("  Input does not ammount to 16 digits  ")
-                    else if (cardNumInput.all { it in numbers })
-                        break
-                    else
-                        throw NumberFormatException()
-                } catch (e: NumberFormatException) {
-                    println("\n======================")
-                    println("  Only input numbers  ")
-                    println("======================\n")
-                    continue
-                } catch (e: InputMismatchException) {
-                    println("\n=======================================")
-                    println(e.message)
-                    println("=======================================\n")
-                }
-            }
-
-            //expiry date
-            while (true) {
-                try {
-                    print("Expiry Date (MM/YY): ")
-                    expDateInput = readln()
-                    expDateInput = expDateInput.filter { !it.isWhitespace() }
-                    xpFormatter.parse(expDateInput)
-
-                    if (expDateInput.length != 5)
-                        throw InputMismatchException("  Input does not amount to 5 digits  ")
-                    else
-                        break
-                } catch (e: ParseException) {
-                    println("\n==========================")
-                    println("  Only input date format  ")
-                    println("        i.e. 09/22        ")
-                    println("==========================\n")
-                    continue
-                } catch (e: InputMismatchException) {
-                    println("\n=======================================")
-                    println(e.message)
-                    println("=======================================\n")
-                }
-            }
-
-            //prepaid card
-            if (accType == "Prepaid Card") {
-                list.add(
-                    PrepaidCard(
-                        firstname = fnameInput,
-                        middlename = mnameInput,
-                        lastname = lnameInput,
-                        dateOfBirth = bdayInput,
-                        currency = currInput,
-                        balance = balanceInput,
-                        cardNumber = cardNumInput,
-                        expiryDate = expDateInput
-                    )
+        //prepaid card
+        if (accType == "Prepaid Card") {
+            cardNumInput = getAccOrCardNumber(16,"Card")
+            expDateInput = getDate("Expiry date (MM/YY)", "MM/yy")
+            list.add(
+                PrepaidCard(
+                    firstname = fnameInput,
+                    middlename = mnameInput,
+                    lastname = lnameInput,
+                    dateOfBirth = bdayInput,
+                    currency = currInput,
+                    balance = balanceInput,
+                    cardNumber = cardNumInput,
+                    expiryDate = expDateInput
                 )
-            } else if (accType == "Credit Card") {
+            )
+        } else if (accType == "Credit Card") {
 
-                //Credit Limit
-                while (true) {
-                    try {
-                        print("Credit Limit: ")
-                        creditLimitInput = readln()
-                        if (creditLimitInput.toBigDecimal() > "0".toBigDecimal())
-                            break
-                        else
-                            throw InputMismatchException("  Credit limit must be above 0  ")
-                    } catch (e: NumberFormatException) {
-                        println("\n======================")
-                        println("  Only input numbers  ")
-                        println("======================\n")
-                        continue
-                    } catch (e: InputMismatchException) {
-                        println("\n================================")
-                        println(e.message)
-                        println("================================\n")
-                        continue
-                    }
-                }
-
-                //cvv
-                while (true) {
-                    try {
-                        print("CVV (back of the card): ")
-                        cvvInput = readln()
-                        cvvInput = cvvInput.filter { !it.isWhitespace() }
-                        if (cvvInput.length != 3)
-                            throw InputMismatchException("  Input does not ammount to 3 digits  ")
-                        else if (cvvInput.all { it in numbers })
-                            break
-                        else
-                            throw NumberFormatException()
-                    } catch (e: NumberFormatException) {
-                        println("\n======================")
-                        println("  Only input numbers  ")
-                        println("======================\n")
-                        continue
-                    } catch (e: InputMismatchException) {
-                        println("\n=======================================")
-                        println(e.message)
-                        println("=======================================\n")
-                    }
-                }
-
-                list.add(
-                    CreditCard(
-                        firstname = fnameInput,
-                        middlename = mnameInput,
-                        lastname = lnameInput,
-                        dateOfBirth = bdayInput,
-                        currency = currInput,
-                        balance = balanceInput,
-                        cardNumber = cardNumInput,
-                        expiryDate = expDateInput,
-                        creditLimit = creditLimitInput,
-                        availableBalance = "${creditLimitInput.toBigDecimal() - balanceInput.toBigDecimal()}",
-                        cvv = cvvInput
-                    )
+            cardNumInput = getAccOrCardNumber(16, "Card")
+            expDateInput = getDate("Expiry date (MM/YY)", "MM/yy")
+            val creditLimitInput = getMoneyInput("Credit Limit")
+            val cvvInput = getCVV()
+            list.add(
+                CreditCard(
+                    firstname = fnameInput,
+                    middlename = mnameInput,
+                    lastname = lnameInput,
+                    dateOfBirth = bdayInput,
+                    currency = currInput,
+                    balance = balanceInput,
+                    cardNumber = cardNumInput,
+                    expiryDate = expDateInput,
+                    creditLimit = creditLimitInput,
+                    availableBalance = "${creditLimitInput.toBigDecimal() - balanceInput.toBigDecimal()}",
+                    cvv = cvvInput
                 )
-            }
-        } else {
-
-            //account number
-            while (true) {
-                try {
-                    print("Account Number: ")
-                    accNumInput = readln()
-                    accNumInput = accNumInput.filter { !it.isWhitespace() }
-
-                    if (accNumInput.length != 10)
-                        throw InputMismatchException("  Input does not ammount to 10 digits  ")
-                    else if (accNumInput.all { it in numbers })
-                        break
-                    else
-                        throw NumberFormatException()
-                } catch (e: NumberFormatException) {
-                    println("\n======================")
-                    println("  Only input numbers  ")
-                    println("======================\n")
-                    continue
-                } catch (e: InputMismatchException) {
-                    println("\n=======================================")
-                    println(e.message)
-                    println("=======================================\n")
-                }
-            }
-
+            )
+        }
+        //acc number
+        else {
+            val accNumInput = getAccOrCardNumber(10, "Account")
             list.add(
                 Savings(
                     firstname = fnameInput,
@@ -339,6 +74,8 @@ fun main(args: Array<String>) {
                 )
             )
         }
+
+        //ask user for next course of action
         while (true) {
             try {
                 println("(E) - Enroll another account/card \n(P) - Print")
@@ -348,34 +85,10 @@ fun main(args: Array<String>) {
                 if (finalInput == "E") {
                     println("\n\n\n")
                     break
-                } else if (finalInput == "P")
-                    while (true) {
-                        try {
-                            print("\n\n\n\n(C) - Print card details \n(A) - Print account details\n")
-                            print("What do you want to print: ")
-
-                            val printInput = readln().uppercase()
-                            if (printInput == "C") {
-                                println("\n\n")
-                                mutableListOf<CardDisplayable>().apply {
-                                    list.filterIsInstance<CardDisplayable>().forEach {
-                                        add(it)
-                                    }
-                                }.forEach { it.printCardDetails() }
-                                break@main
-                            } else if (printInput == "A") {
-                                println("\n\n")
-                                list.forEach { it.getFormattedDetails() }
-                                break@main
-                            } else
-                                throw IllegalArgumentException("  Please input C or A only  ")
-                        } catch (e: IllegalArgumentException) {
-                            println("\n==============================")
-                            println("${e.message}")
-                            println("==============================\n")
-                            continue
-                        }
-                    }
+                } else if (finalInput == "P") {
+                    printOptions(list)
+                    break@main
+                }
                 else
                     throw IllegalArgumentException("  Please input E or P only  ")
             } catch (e: IllegalArgumentException) {
@@ -385,97 +98,210 @@ fun main(args: Array<String>) {
                 continue
             }
         }
-
     }
 }
 
-//        Savings(
-//            firstname = "Juan",
-//            middlename = "De la Cerna",
-//            lastname = "De la Cruz",
-//            currency = "PHP",
-//            balance = "1000.0",
-//            dateOfBirth = "2005/01/01",
-//            accountNumber = "6001234567"
-//        ),
-//        PrepaidCard(
-//            firstname = "Janine",
-//            middlename = "Santos",
-//            lastname = "De Leon",
-//            currency = "USD",
-//            balance = "100000.0",
-//            dateOfBirth = "2000/12/25",
-//            cardNumber = "1234567899990000",
-//            expiryDate = "1222"
-//        ),
-//        Savings(
-//            firstname = "Antonio",
-//            middlename = "San Andres",
-//            lastname = "Alkalde",
-//            currency = "PHP",
-//            balance = "12523.62",
-//            dateOfBirth = "2004/08/29",
-//            accountNumber = "6002444422"
-//        ),
-//        Savings(
-//            firstname = "Floyd Richard",
-//            middlename = "Verdejo",
-//            lastname = "Tiu",
-//            currency = "PHP",
-//            balance = "420000.69",
-//            dateOfBirth = "2001/05/30",
-//            accountNumber = "0915047069"
-//        ),
-//        PrepaidCard(
-//            firstname = "Carlos",
-//            middlename = "Wu",
-//            lastname = "Shi",
-//            currency = "USD",
-//            balance = "69000.42",
-//            dateOfBirth = "2000/11/02",
-//            cardNumber = "9424206544123456",
-//            expiryDate = "1223"
-//        ),
-//        PrepaidCard(
-//            firstname = "Sherwin",
-//            middlename = null,
-//            lastname = "Catli",
-//            currency = "PHP",
-//            balance = "12345.01",
-//            dateOfBirth = "1995/04/11",
-//            cardNumber = "9215938644987654",
-//            expiryDate = "0924"
-//        ),
-//        CreditCard(
-//            firstname = "David Maxwell Jai",
-//            middlename = "Dotillos",
-//            lastname = "Imbong",
-//            currency = "PHP",
-//            balance = "12036.08",
-//            dateOfBirth = "2000/05/18",
-//            cardNumber = "0921593864401234",
-//            cvv = "563",
-//            availableBalance = "17963.92",
-//            creditLimit = "30000",
-//            expiryDate = "0723"
-//        ),
-//        CreditCard(
-//            firstname = "Time",
-//            middlename = "Cook",
-//            lastname = "Apple",
-//            currency = "PHP",
-//            balance = "50000.0",
-//            dateOfBirth = "2000/02/28",
-//            cardNumber = "4126567899991991",
-//            cvv = "693",
-//            availableBalance = "250000.0",
-//            creditLimit = "300000",
-//            expiryDate = "0425"
-//        )
-//    )//.forEach { it.getFormattedDetails() }
-//
-//    val list2 = mutableListOf<CardDisplayable>().apply {
-//        list.filterIsInstance<CardDisplayable>().forEach{
-//            add(it)
-//        }
-//    }.forEach { it.printCardDetails() }
+fun getAccType(): String {
+    var str: String
+    while (true) {
+        try {
+            println("(S) - Savings \n(C) - Credit Card \n(P) - Prepaid Card ")
+            print("Choose which Account type to Enroll (input first letter only): ")
+            str = readln().uppercase()
+
+            str = when (str) {
+                "P" -> "Prepaid Card"
+                "C" -> "Credit Card"
+                "S" -> "Savings"
+                else -> throw IllegalArgumentException("  Please input S C or P only  ")
+            }
+        } catch (e: IllegalArgumentException) {
+            println("\n==============================")
+            println("${e.message}")
+            println("==============================\n")
+            continue
+        }
+        println("\n\n\n\n==============================   $str   ==============================")
+        println("Please input the desired information (please follow the format stated if there are any)")
+        return str
+    }
+}
+
+fun getName(str: String): String {
+    var name: String
+    while (true) {
+        try {
+            print("$str: ")
+            name = readln()
+            if (name.isBlank() && str != "Middle name")
+                throw InputMismatchException("   $str cannot be blank or empty   ")
+            else if (name.any { it in "0123456789/?!:;%" })
+                throw InputMismatchException("  Name cannot contain numbers or symbols ")
+            else
+                return name
+        } catch (e: InputMismatchException) {
+            println("\n=========================================")
+            println("${e.message}")
+            println("===========================================\n")
+            continue
+        }
+    }
+}
+
+fun getDate(input: String, format: String): String {
+    val df = SimpleDateFormat(format)
+    df.isLenient = false
+
+    var str: String
+
+    while (true) {
+        try {
+            print("$input: ")
+            str = readln()
+            str = str.filter { !it.isWhitespace() }
+
+            if (df.parse(str).after(SimpleDateFormat("yyyy-MM-dd").parse(LocalDate.now().toString())) &&
+                input == "Birthday (YYYY/MM/DD)"
+            )
+                throw InputMismatchException("Enter a valid birthday")
+            else
+                return str
+        } catch (e: ParseException) {
+            println("\n=============================")
+            println("  Please enter a valid date  ")
+            println("=============================\n")
+            continue
+        } catch (e: InputMismatchException) {
+            println("\n======================================")
+            println("  Birthday must be before today's date")
+            println("======================================\n")
+            continue
+        }
+    }
+}
+
+fun getCurr(): String {
+    var str: String
+    while (true) {
+        try {
+            print("Currency (USD, PHP, JPY): ")
+            str = readln().uppercase()
+            if (str == "USD" || str == "JPY" || str == "PHP") {
+                return str
+            } else
+                throw InputMismatchException("  Select only one of the choices  ")
+        } catch (e: InputMismatchException) {
+            println("\n==================================")
+            println("${e.message}")
+            println("==================================\n")
+            continue
+        }
+    }
+}
+
+fun getMoneyInput(output: String): String {
+    var str: String
+    while (true) {
+        try {
+            print("$output: ")
+            str = readln()
+            if (str.toBigDecimal() > "0".toBigDecimal())
+                return str
+            else
+                throw InputMismatchException("  $output must be above 0  ")
+        } catch (e: NumberFormatException) {
+            println("\n======================")
+            println("  Only input numbers  ")
+            println("======================\n")
+            continue
+        } catch (e: InputMismatchException) {
+            println("\n================================")
+            println(e.message)
+            println("================================\n")
+            continue
+        }
+    }
+}
+
+fun getAccOrCardNumber(maxLength: Int, type:String): String {
+    var str: String
+    while (true) {
+        try {
+            print("$type Number: ")
+            str = readln()
+            str = str.filter { !it.isWhitespace() }
+            if (str.length != maxLength)
+                throw InputMismatchException("  Input does not ammount to $maxLength digits  ")
+            else if (str.all { it in "1234567890" })
+                return str
+            else
+                throw NumberFormatException()
+        } catch (e: NumberFormatException) {
+            println("\n======================")
+            println("  Only input numbers  ")
+            println("======================\n")
+            continue
+        } catch (e: InputMismatchException) {
+            println("\n=======================================")
+            println(e.message)
+            println("=======================================\n")
+            continue
+        }
+    }
+}
+
+fun getCVV(): String {
+    var str: String
+    while (true) {
+        try {
+            print("CVV (back of the card): ")
+            str = readln()
+            str = str.filter { !it.isWhitespace() }
+            if (str.length != 3)
+                throw InputMismatchException("  Input does not ammount to 3 digits  ")
+            else if (str.all { it in "1234567890" })
+                return str
+            else
+                throw NumberFormatException()
+        } catch (e: NumberFormatException) {
+            println("\n======================")
+            println("  Only input numbers  ")
+            println("======================\n")
+            continue
+        } catch (e: InputMismatchException) {
+            println("\n=======================================")
+            println(e.message)
+            println("=======================================\n")
+        }
+    }
+}
+
+fun printOptions(list: MutableList<Account>){
+    while (true) {
+        try {
+            print("\n\n\n\n(C) - Print card details \n(A) - Print account details\n")
+            print("What do you want to print: ")
+
+            val printInput = readln().uppercase()
+            if (printInput == "C") {
+                println("\n\n")
+                mutableListOf<CardDisplayable>().apply {
+                    list.filterIsInstance<CardDisplayable>().forEach {
+                        add(it)
+                    }
+                }.forEach { it.printCardDetails() }
+                break
+            } else if (printInput == "A") {
+                println("\n\n")
+                list.forEach { it.getFormattedDetails() }
+                break
+            } else
+                throw IllegalArgumentException("  Please input C or A only  ")
+        } catch (e: IllegalArgumentException) {
+            println("\n==============================")
+            println("${e.message}")
+            println("==============================\n")
+            continue
+        }
+    }
+}
