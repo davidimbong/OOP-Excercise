@@ -9,7 +9,6 @@ interface CardDisplayable {
 
     fun printCardDetails() {
         val formattedCardNumber = cardNumber.separateString(4, ' ')
-        val formattedExpiryDate = expiryDate.separateString(2, '/')
-        println("$formattedCardNumber : $formattedExpiryDate")
+        println("$formattedCardNumber : $expiryDate")
     }
 }

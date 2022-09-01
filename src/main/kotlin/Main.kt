@@ -27,6 +27,7 @@ fun main(args: Array<String>) {
     var accNumInput: String
 
     val df = SimpleDateFormat("yyyy/MM/dd")
+    val xpFormatter = SimpleDateFormat("MM/yy")
     df.isLenient = false
 
     main@ while (true) {
@@ -125,7 +126,7 @@ fun main(args: Array<String>) {
                 println("          Example 2022/08/30  ")
                 println("=======================================\n")
                 continue
-            }catch (e: ParseException) {
+            } catch (e: ParseException) {
                 println("\n=============================")
                 println("  Please enter a valid date  ")
                 println("=============================\n")
@@ -145,8 +146,7 @@ fun main(args: Array<String>) {
                 currInput = readln().uppercase()
                 if (currInput == "USD" || currInput == "JPY" || currInput == "PHP") {
                     break
-                }
-                else
+                } else
                     throw InputMismatchException("  Select only one of the choices  ")
             } catch (e: InputMismatchException) {
                 println("\n==================================")
@@ -178,7 +178,7 @@ fun main(args: Array<String>) {
                 try {
                     print("Card Number: ")
                     cardNumInput = readln()
-                    cardNumInput.filter { !it.isWhitespace() }
+                    cardNumInput = cardNumInput.filter { !it.isWhitespace() }
                     if (cardNumInput.length != 16)
                         throw InputMismatchException("  Input does not ammount to 16 digits  ")
                     else if (cardNumInput.all { it in numbers })
@@ -200,21 +200,20 @@ fun main(args: Array<String>) {
             //expiry date
             while (true) {
                 try {
-                    print("Expiry Date (numbers only): ")
+                    print("Expiry Date (MM/YY): ")
                     expDateInput = readln()
-                    expDateInput.toInt()
-                    expDateInput.filter { !it.isWhitespace() }
+                    expDateInput = expDateInput.filter { !it.isWhitespace() }
+                    xpFormatter.parse(expDateInput)
 
-                    if (expDateInput.length != 4)
-                        throw InputMismatchException("  Input does not amount to 4 digits  ")
-                    //check if within 12 months
-                    else if (expDateInput.take(2).toInt() > 12)
-                        throw InputMismatchException("     Input is not a proper date    ")
-                    else break
-                } catch (e: NumberFormatException) {
-                    println("\n======================")
-                    println("  Only input numbers  ")
-                    println("======================\n")
+                    if (expDateInput.length != 5)
+                        throw InputMismatchException("  Input does not amount to 5 digits  ")
+                    else
+                        break
+                } catch (e: ParseException) {
+                    println("\n==========================")
+                    println("  Only input date format  ")
+                    println("        i.e. 09/22        ")
+                    println("==========================\n")
                     continue
                 } catch (e: InputMismatchException) {
                     println("\n=======================================")
@@ -266,11 +265,13 @@ fun main(args: Array<String>) {
                     try {
                         print("CVV (back of the card): ")
                         cvvInput = readln()
-                        cvvInput.toInt()
-                        cvvInput.filter { !it.isWhitespace() }
+                        cvvInput = cvvInput.filter { !it.isWhitespace() }
                         if (cvvInput.length != 3)
                             throw InputMismatchException("  Input does not ammount to 3 digits  ")
-                        else break
+                        else if (cvvInput.all { it in numbers })
+                            break
+                        else
+                            throw NumberFormatException()
                     } catch (e: NumberFormatException) {
                         println("\n======================")
                         println("  Only input numbers  ")
@@ -304,8 +305,9 @@ fun main(args: Array<String>) {
             //account number
             while (true) {
                 try {
-                    print("Account Number(no space): ")
+                    print("Account Number: ")
                     accNumInput = readln()
+                    accNumInput = accNumInput.filter { !it.isWhitespace() }
 
                     if (accNumInput.length != 10)
                         throw InputMismatchException("  Input does not ammount to 10 digits  ")
@@ -349,27 +351,24 @@ fun main(args: Array<String>) {
                 } else if (finalInput == "P")
                     while (true) {
                         try {
-                            if (accType == "Credit Card" || accType == "Prepaid Card") {
-                                print("(C) - Print card details \n(A) - Print account details\n")
-                                print("What do you want to print: ")
+                            print("\n\n\n\n(C) - Print card details \n(A) - Print account details\n")
+                            print("What do you want to print: ")
 
-                                val printInput = readln().uppercase()
-                                if (printInput == "C") {
-                                    mutableListOf<CardDisplayable>().apply {
-                                        list.filterIsInstance<CardDisplayable>().forEach {
-                                            add(it)
-                                        }
-                                    }.forEach { it.printCardDetails() }
-                                    break@main
-                                } else if (printInput == "A") {
-                                    list.forEach { it.getFormattedDetails() }
-                                    break@main
-                                } else
-                                    throw IllegalArgumentException("  Please input C or A only  ")
-                            } else {
+                            val printInput = readln().uppercase()
+                            if (printInput == "C") {
+                                println("\n\n")
+                                mutableListOf<CardDisplayable>().apply {
+                                    list.filterIsInstance<CardDisplayable>().forEach {
+                                        add(it)
+                                    }
+                                }.forEach { it.printCardDetails() }
+                                break@main
+                            } else if (printInput == "A") {
+                                println("\n\n")
                                 list.forEach { it.getFormattedDetails() }
                                 break@main
-                            }
+                            } else
+                                throw IllegalArgumentException("  Please input C or A only  ")
                         } catch (e: IllegalArgumentException) {
                             println("\n==============================")
                             println("${e.message}")
