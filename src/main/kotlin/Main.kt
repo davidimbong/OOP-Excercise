@@ -1,8 +1,6 @@
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.time.LocalDate
-import java.time.format.DateTimeFormatter
-import java.time.format.DateTimeParseException
 import java.util.*
 
 @Suppress("LABEL_NAME_CLASH")
@@ -11,69 +9,70 @@ fun main(args: Array<String>) {
     val list = mutableListOf<Account>()
     var cardNumInput: String
     var expDateInput: String
-
-
+    
     main@ while (true) {
         val accType = getAccType()
         val fnameInput = getName("First name")
         val mnameInput = getName("Middle name")
         val lnameInput = getName("Last name")
-        val bdayInput = getDate("Birthday (YYYY/MM/DD)", "yyyy/MM/dd")
+        val bdayInput = getBday()
         val currInput = getCurr()
         val balanceInput = getMoneyInput("Balance")
 
         //prepaid card
-        if (accType == "Prepaid Card") {
-            cardNumInput = getAccOrCardNumber(16,"Card")
-            expDateInput = getDate("Expiry date (MM/YY)", "MM/yy")
-            list.add(
-                PrepaidCard(
-                    firstname = fnameInput,
-                    middlename = mnameInput,
-                    lastname = lnameInput,
-                    dateOfBirth = bdayInput,
-                    currency = currInput,
-                    balance = balanceInput,
-                    cardNumber = cardNumInput,
-                    expiryDate = expDateInput
+        when (accType) {
+            "Prepaid Card" -> {
+                cardNumInput = getAccOrCardNumber(16,"Card")
+                expDateInput = getExpiryDate()
+                list.add(
+                    PrepaidCard(
+                        firstname = fnameInput,
+                        middlename = mnameInput,
+                        lastname = lnameInput,
+                        dateOfBirth = bdayInput,
+                        currency = currInput,
+                        balance = balanceInput,
+                        cardNumber = cardNumInput,
+                        expiryDate = expDateInput
+                    )
                 )
-            )
-        } else if (accType == "Credit Card") {
+            }
+            "Credit Card" -> {
 
-            cardNumInput = getAccOrCardNumber(16, "Card")
-            expDateInput = getDate("Expiry date (MM/YY)", "MM/yy")
-            val creditLimitInput = getMoneyInput("Credit Limit")
-            val cvvInput = getCVV()
-            list.add(
-                CreditCard(
-                    firstname = fnameInput,
-                    middlename = mnameInput,
-                    lastname = lnameInput,
-                    dateOfBirth = bdayInput,
-                    currency = currInput,
-                    balance = balanceInput,
-                    cardNumber = cardNumInput,
-                    expiryDate = expDateInput,
-                    creditLimit = creditLimitInput,
-                    availableBalance = "${creditLimitInput.toBigDecimal() - balanceInput.toBigDecimal()}",
-                    cvv = cvvInput
+                cardNumInput = getAccOrCardNumber(16, "Card")
+                expDateInput = getExpiryDate()
+                val creditLimitInput = getMoneyInput("Credit Limit")
+                val cvvInput = getCVV()
+                list.add(
+                    CreditCard(
+                        firstname = fnameInput,
+                        middlename = mnameInput,
+                        lastname = lnameInput,
+                        dateOfBirth = bdayInput,
+                        currency = currInput,
+                        balance = balanceInput,
+                        cardNumber = cardNumInput,
+                        expiryDate = expDateInput,
+                        creditLimit = creditLimitInput,
+                        availableBalance = "${creditLimitInput.toBigDecimal() - balanceInput.toBigDecimal()}",
+                        cvv = cvvInput
+                    )
                 )
-            )
-        }
-        //acc number
-        else {
-            val accNumInput = getAccOrCardNumber(10, "Account")
-            list.add(
-                Savings(
-                    firstname = fnameInput,
-                    middlename = mnameInput,
-                    lastname = lnameInput,
-                    dateOfBirth = bdayInput,
-                    currency = currInput,
-                    balance = balanceInput,
-                    accountNumber = accNumInput
+            }
+            "Savings" -> {
+                val accNumInput = getAccOrCardNumber(10, "Account")
+                list.add(
+                    Savings(
+                        firstname = fnameInput,
+                        middlename = mnameInput,
+                        lastname = lnameInput,
+                        dateOfBirth = bdayInput,
+                        currency = currInput,
+                        balance = balanceInput,
+                        accountNumber = accNumInput
+                    )
                 )
-            )
+            }
         }
 
         //ask user for next course of action
@@ -149,22 +148,22 @@ fun getName(str: String): String {
     }
 }
 
-fun getDate(input: String, format: String): String {
-    val df = SimpleDateFormat(format)
+fun getBday(): String {
+    val df = SimpleDateFormat("yyyy/MM/dd")
     df.isLenient = false
-
     var str: String
 
     while (true) {
         try {
-            print("$input: ")
+            print("Birthday(YYYY/MM/DD): ")
             str = readln()
             str = str.filter { !it.isWhitespace() }
 
-            if (df.parse(str).after(SimpleDateFormat("yyyy-MM-dd").parse(LocalDate.now().toString())) &&
-                input == "Birthday (YYYY/MM/DD)"
-            )
-                throw InputMismatchException("Enter a valid birthday")
+            if(!str.matches(Regex("^([0-9]{4})/([0-9]{2})/([0-9]{2})$")))
+                throw InputMismatchException("  Input must be in the format (YYYY/MM/DD)\n" +
+                                             "           i.e. 2000/12/25")
+            else if (df.parse(str).after(SimpleDateFormat("yyyy-MM-dd").parse(LocalDate.now().toString())))
+                throw InputMismatchException("  Birthday must be before today's date")
             else
                 return str
         } catch (e: ParseException) {
@@ -173,9 +172,42 @@ fun getDate(input: String, format: String): String {
             println("=============================\n")
             continue
         } catch (e: InputMismatchException) {
-            println("\n======================================")
-            println("  Birthday must be before today's date")
-            println("======================================\n")
+            println("\n============================================")
+            println(e.message)
+            println("============================================\n")
+            continue
+        }
+    }
+}
+
+fun getExpiryDate(): String {
+    val df = SimpleDateFormat("MM/yy")
+    df.isLenient = false
+    var str: String
+
+    while (true) {
+        try {
+            print("Expiry Date (MM/YY): ")
+            str = readln()
+            str = str.filter { !it.isWhitespace() }
+
+            //if(!str.matches(Regex("^(0[1-9]|1[0-2])/([0-9]{2})$")))
+            if(!str.matches(Regex("^([0-9]{2})/([0-9]{2})$")))
+                throw InputMismatchException("  Input must be in the format (MM/YY)\n" +
+                                             "              i.e. 12/25")
+             if (!df.parse(str).after(SimpleDateFormat("yyyy-MM-dd").parse(LocalDate.now().toString())))
+                throw InputMismatchException("               Card can not be expired")
+            else
+                return str
+        } catch (e: ParseException) {
+            println("\n=============================")
+            println("  Please enter a valid date  ")
+            println("=============================\n")
+            continue
+        } catch (e: InputMismatchException) {
+            println("\n=======================================")
+            println(e.message)
+            println("=======================================\n")
             continue
         }
     }
@@ -206,7 +238,7 @@ fun getMoneyInput(output: String): String {
         try {
             print("$output: ")
             str = readln()
-            if (str.toBigDecimal() > "0".toBigDecimal())
+            if (str.toBigDecimal() > "0".toBigDecimal() || output == "Balance")
                 return str
             else
                 throw InputMismatchException("  $output must be above 0  ")
@@ -231,10 +263,11 @@ fun getAccOrCardNumber(maxLength: Int, type:String): String {
             print("$type Number: ")
             str = readln()
             str = str.filter { !it.isWhitespace() }
-           if (str.matches(Regex("^[0-9]{$maxLength}+\$")))
-                return str
-            else
-                throw InputMismatchException("  Input does not amount to 10 digits  ")
+            @Suppress("RegExpSimplifiable")
+            if (str.matches(Regex("^[0-9]{$maxLength}+\$")))
+                 return str
+             else
+                 throw InputMismatchException("  Input does not amount to $maxLength digits  ")
         } catch (e: NumberFormatException) {
             println("\n======================")
             println("  Only input numbers  ")
