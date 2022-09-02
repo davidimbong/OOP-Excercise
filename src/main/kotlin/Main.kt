@@ -3,14 +3,28 @@ import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.util.*
 
-@Suppress("LABEL_NAME_CLASH")
+enum class AccountType(val longDesc: String) {
+    SA("Savings Account"),
+    CC("Credit Card"),
+    PC("Prepaid Card")
+//    SAVINGS,
+//    CREDITCARD,
+//    PREPAIDCARD
+}
+
+enum class Currency(shortCode: String, longDesc: String) {
+    PHP("PHP", "Philippine Peso"),
+    USD("USD", "United States Dollar"),
+    JPY("JPY", "Japanese Yen")
+}
+
 fun main(args: Array<String>) {
 
     val list = mutableListOf<Account>()
     var cardNumInput: String
     var expDateInput: String
-    
-    main@ while (true) {
+
+    mainLoop@ while (true) {
         val accType = getAccType()
         val fnameInput = getName("First name")
         val mnameInput = getName("Middle name")
@@ -21,8 +35,8 @@ fun main(args: Array<String>) {
 
         //prepaid card
         when (accType) {
-            "Prepaid Card" -> {
-                cardNumInput = getAccOrCardNumber(16,"Card")
+            AccountType.PC -> {
+                cardNumInput = getAccOrCardNumber(16, "Card")
                 expDateInput = getExpiryDate()
                 list.add(
                     PrepaidCard(
@@ -37,7 +51,8 @@ fun main(args: Array<String>) {
                     )
                 )
             }
-            "Credit Card" -> {
+
+            AccountType.CC -> {
 
                 cardNumInput = getAccOrCardNumber(16, "Card")
                 expDateInput = getExpiryDate()
@@ -59,7 +74,8 @@ fun main(args: Array<String>) {
                     )
                 )
             }
-            "Savings" -> {
+
+            AccountType.SA -> {
                 val accNumInput = getAccOrCardNumber(10, "Account")
                 list.add(
                     Savings(
@@ -87,9 +103,8 @@ fun main(args: Array<String>) {
                     break
                 } else if (finalInput == "P") {
                     printOptions(list)
-                    break@main
-                }
-                else
+                    break@mainLoop
+                } else
                     throw IllegalArgumentException("  Please input E or P only  ")
             } catch (e: IllegalArgumentException) {
                 println("\n==============================")
@@ -101,27 +116,23 @@ fun main(args: Array<String>) {
     }
 }
 
-fun getAccType(): String {
-    var str: String
+fun getAccType(): Enum<AccountType> {
+    var str: Enum<AccountType>
+    var input: String
     while (true) {
         try {
-            println("(S) - Savings \n(C) - Credit Card \n(P) - Prepaid Card ")
+            println("(SA) - Savings Account \n(CC) - Credit Card \n(PC) - Prepaid Card ")
             print("Choose which Account type to Enroll (input first letter only): ")
-            str = readln().uppercase()
+            input = readln().uppercase()
 
-            str = when (str) {
-                "P" -> "Prepaid Card"
-                "C" -> "Credit Card"
-                "S" -> "Savings"
-                else -> throw IllegalArgumentException("  Please input S C or P only  ")
-            }
+            str = AccountType.valueOf(input)
         } catch (e: IllegalArgumentException) {
-            println("\n==============================")
-            println("${e.message}")
-            println("==============================\n")
+            println("\n=================================")
+            println("  Please input SA CC or PC only  ")
+            println("=================================\n")
             continue
         }
-        println("\n\n\n\n==============================   $str   ==============================")
+        println("\n\n\n\n==============================   ${AccountType.valueOf(input).longDesc}   ==============================")
         println("Please input the desired information (please follow the format stated if there are any)")
         return str
     }
@@ -159,9 +170,11 @@ fun getBday(): String {
             str = readln()
             str = str.filter { !it.isWhitespace() }
 
-            if(!str.matches(Regex("^([0-9]{4})/([0-9]{2})/([0-9]{2})$")))
-                throw InputMismatchException("  Input must be in the format (YYYY/MM/DD)\n" +
-                                             "           i.e. 2000/12/25")
+            if (!str.matches(Regex("^(\\d{4})/(\\d{2})/(\\d{2})$")))
+                throw InputMismatchException(
+                    "  Input must be in the format (YYYY/MM/DD)\n" +
+                            "           i.e. 2000/12/25"
+                )
             else if (df.parse(str).after(SimpleDateFormat("yyyy-MM-dd").parse(LocalDate.now().toString())))
                 throw InputMismatchException("  Birthday must be before today's date")
             else
@@ -192,10 +205,12 @@ fun getExpiryDate(): String {
             str = str.filter { !it.isWhitespace() }
 
             //if(!str.matches(Regex("^(0[1-9]|1[0-2])/([0-9]{2})$")))
-            if(!str.matches(Regex("^([0-9]{2})/([0-9]{2})$")))
-                throw InputMismatchException("  Input must be in the format (MM/YY)\n" +
-                                             "              i.e. 12/25")
-             if (!df.parse(str).after(SimpleDateFormat("yyyy-MM-dd").parse(LocalDate.now().toString())))
+            if (!str.matches(Regex("^(\\d{2})/(\\d{2})$")))
+                throw InputMismatchException(
+                    "  Input must be in the format (MM/YY)\n" +
+                            "              i.e. 12/25"
+                )
+            if (!df.parse(str).after(SimpleDateFormat("yyyy-MM-dd").parse(LocalDate.now().toString())))
                 throw InputMismatchException("               Card can not be expired")
             else
                 return str
@@ -213,19 +228,16 @@ fun getExpiryDate(): String {
     }
 }
 
-fun getCurr(): String {
+fun getCurr(): Enum<Currency> {
     var str: String
     while (true) {
         try {
             print("Currency (USD, PHP, JPY): ")
             str = readln().uppercase()
-            if (str == "USD" || str == "JPY" || str == "PHP") {
-                return str
-            } else
-                throw InputMismatchException("  Select only one of the choices  ")
-        } catch (e: InputMismatchException) {
+            return Currency.valueOf(str)
+        } catch (e: IllegalArgumentException) {
             println("\n==================================")
-            println("${e.message}")
+            println("  Select only one of the choices  ")
             println("==================================\n")
             continue
         }
@@ -256,7 +268,7 @@ fun getMoneyInput(output: String): String {
     }
 }
 
-fun getAccOrCardNumber(maxLength: Int, type:String): String {
+fun getAccOrCardNumber(maxLength: Int, type: String): String {
     var str: String
     while (true) {
         try {
@@ -264,10 +276,10 @@ fun getAccOrCardNumber(maxLength: Int, type:String): String {
             str = readln()
             str = str.filter { !it.isWhitespace() }
             @Suppress("RegExpSimplifiable")
-            if (str.matches(Regex("^[0-9]{$maxLength}+\$")))
-                 return str
-             else
-                 throw InputMismatchException("  Input does not amount to $maxLength digits  ")
+            if (str.matches(Regex("^\\d{$maxLength}+\$")))
+                return str
+            else
+                throw InputMismatchException("  Input does not amount to $maxLength digits  ")
         } catch (e: NumberFormatException) {
             println("\n======================")
             println("  Only input numbers  ")
@@ -289,7 +301,7 @@ fun getCVV(): String {
             print("CVV (back of the card): ")
             str = readln()
             str = str.filter { !it.isWhitespace() }
-            if (str.matches(Regex("^[0-9]{3}+\$")))
+            if (str.matches(Regex("^\\d{3}+\$")))
                 return str
             else
                 throw InputMismatchException("  Input does not amount to 3 digits  ")
@@ -306,7 +318,7 @@ fun getCVV(): String {
     }
 }
 
-fun printOptions(list: MutableList<Account>){
+fun printOptions(list: MutableList<Account>) {
     while (true) {
         try {
             print("\n\n\n\n(C) - Print card details \n(A) - Print account details\n")

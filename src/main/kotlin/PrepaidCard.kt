@@ -2,7 +2,7 @@ class PrepaidCard(
     firstname: String,
     middlename: String?,
     lastname: String,
-    currency: String,
+    currency: Enum<Currency>,
     balance: String,
     dateOfBirth: String,
     override val cardNumber: String,

@@ -5,7 +5,7 @@ interface CardDisplayable {
 
     val cardNumber: String
     val expiryDate: String
-    val currency: String
+    val currency: Enum<Currency>
 
     fun printCardDetails() {
         val formattedCardNumber = cardNumber.separateString(4, ' ')

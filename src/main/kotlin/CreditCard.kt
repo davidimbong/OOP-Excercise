@@ -2,7 +2,7 @@ class CreditCard(
     firstname: String,
     middlename: String?,
     lastname: String,
-    currency: String,
+    currency: Enum<Currency>,
     balance: String,
     dateOfBirth: String,
     override val cardNumber: String,
@@ -15,7 +15,7 @@ class CreditCard(
     override fun getFormattedDetails() {
 
         val formattedCardNumber = cardNumber.separateString(4, ' ')
-        val formattedLimit = creditLimit.convertToMoneyFormat(currency)
+        val formattedLimit = creditLimit.convertToMoneyFormat(currency.name)
 
         println("$formattedCardNumber |$fullname | Credit Card | $formattedBalance out of $formattedLimit | $expiryDate")
     }

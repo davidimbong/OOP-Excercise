@@ -5,7 +5,7 @@ abstract class Account(
      val firstname: String,
      val middlename: String?,
      val lastname: String,
-     val currency: String,
+     val currency: Enum<Currency>,
      val balance: String,
      val dateOfBirth: String
 ) {
@@ -21,7 +21,7 @@ abstract class Account(
             return "NON-MINOR"
         }
 
-    protected val formattedBalance = balance.convertToMoneyFormat(currency)
+    protected val formattedBalance = balance.convertToMoneyFormat(currency.name)
 
     val fullname: String
         get() {

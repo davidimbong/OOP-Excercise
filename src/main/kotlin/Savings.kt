@@ -2,7 +2,7 @@ class Savings(
     firstname: String,
     middlename: String?,
     lastname: String,
-    currency: String,
+    currency: Enum<Currency>,
     balance: String,
     dateOfBirth: String,
     private val accountNumber: String
