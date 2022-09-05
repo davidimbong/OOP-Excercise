@@ -18,6 +18,7 @@ enum class Currency(shortCode: String, longDesc: String) {
     JPY("JPY", "Japanese Yen")
 }
 
+
 fun main(args: Array<String>) {
 
     val list = mutableListOf<Account>()
@@ -94,7 +95,7 @@ fun main(args: Array<String>) {
         //ask user for next course of action
         while (true) {
             try {
-                println("(E) - Enroll another account/card \n(P) - Print")
+                println("(E) - Enroll another account/card \n(P) - Print\n(X) - Exit")
                 print("What do you want to do next: ")
                 val finalInput = readln().uppercase()
 
@@ -103,6 +104,7 @@ fun main(args: Array<String>) {
                     break
                 } else if (finalInput == "P") {
                     printOptions(list)
+                } else if(finalInput == "X"){
                     break@mainLoop
                 } else
                     throw IllegalArgumentException("  Please input E or P only  ")
@@ -146,10 +148,10 @@ fun getName(str: String): String {
             name = readln()
             if (name.isBlank() && str != "Middle name")
                 throw InputMismatchException("   $str cannot be blank or empty   ")
-            else if (name.matches(Regex("^[\\p{L}\\s]+$")))
-                return name
-            else
+            else if (name.any { it in "0123456789/?!:;%" } )
                 throw InputMismatchException("  Name cannot contain numbers or symbols ")
+            else
+                return name
         } catch (e: InputMismatchException) {
             println("\n=========================================")
             println("${e.message}")
@@ -319,30 +321,36 @@ fun getCVV(): String {
 }
 
 fun printOptions(list: MutableList<Account>) {
+    println("\n\n\n")
     while (true) {
         try {
-            print("\n\n\n\n(C) - Print card details \n(A) - Print account details\n")
+            print("\n(C) - Print card details \n(A) - Print account details\n(X) - Exit \n")
             print("What do you want to print: ")
 
-            val printInput = readln().uppercase()
+            val printInput = readln().uppercase().filter { !it.isWhitespace() }
             if (printInput == "C") {
                 println("\n\n")
-                mutableListOf<CardDisplayable>().apply {
+                val list2 = mutableListOf<CardDisplayable>().apply {
                     list.filterIsInstance<CardDisplayable>().forEach {
                         add(it)
                     }
-                }.forEach { it.printCardDetails() }
-                break
+                }
+                if (list2.isNullOrEmpty()){
+                    throw IllegalArgumentException("  No cards have been enrolled")
+                }
+                else
+                    list2.forEach { it.printCardDetails() }
             } else if (printInput == "A") {
                 println("\n\n")
                 list.forEach { it.getFormattedDetails() }
+            } else if(printInput == "X"){
                 break
             } else
-                throw IllegalArgumentException("  Please input C or A only  ")
+                throw IllegalArgumentException("   Please input C or A only  ")
         } catch (e: IllegalArgumentException) {
-            println("\n==============================")
+            println("\n===============================")
             println("${e.message}")
-            println("==============================\n")
+            println("===============================\n")
             continue
         }
     }
