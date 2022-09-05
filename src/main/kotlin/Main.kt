@@ -1,4 +1,5 @@
 import java.lang.StringBuilder
+import java.math.BigDecimal
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.time.LocalDate
@@ -13,33 +14,33 @@ enum class AccountType(val longDesc: String, val maxLength: Int) {
 //    PREPAIDCARD
 }
 
+@Suppress("unused")
 enum class Currency(val shortCode: String, val longDesc: String) {
     PHP("PHP", "Philippine Peso"),
     USD("USD", "United States Dollar"),
     JPY("JPY", "Japanese Yen")
 }
 
-enum class Name(val stringVal: String,val isMandatory: Boolean){
-    FIRSTNAME("First name",true),
-    MIDDLENAME("Middle name",false),
-    LASTNAME("Last name",true),
+enum class Name(val stringVal: String, val isMandatory: Boolean) {
+    FIRSTNAME("First name", true),
+    MIDDLENAME("Middle name", false),
+    LASTNAME("Last name", true),
 }
 
-enum class MoneyInput(val StringVal:String, val negativeAllowed: Boolean, val zeroAllowed: Boolean){
+@Suppress("unused")
+enum class MoneyInput(val stringVal: String, val isValid: (BigDecimal) -> Boolean) {
     BALANCE("Balance",
-        true,
-        true),
-
+        { true }
+    ),
     CREDITLIMIT("Credit Limit",
-        false,
-        false),
-
+        { it > "0".toBigDecimal() }
+    ),
     AVAILABLEBALANCE("Available Balance",
-        false,
-        true)
+        { it >= "0".toBigDecimal() }
+    )
 }
 
-fun main(args: Array<String>) {
+fun main() {
 
     val list = mutableListOf<Account>()
     var cardNumInput: String
@@ -124,7 +125,7 @@ fun main(args: Array<String>) {
                     break
                 } else if (finalInput == "P") {
                     printOptions(list)
-                } else if(finalInput == "X"){
+                } else if (finalInput == "X") {
                     break@mainLoop
                 } else
                     throw IllegalArgumentException("  Please input E or P only  ")
@@ -168,10 +169,10 @@ fun getName(str: Name): String {
             name = readln()
             if (name.isBlank() && str.isMandatory)
                 throw InputMismatchException("   ${str.stringVal} cannot be blank or empty   ")
-            else if (name.any { it in "0123456789/?!:;%" } )
-                throw InputMismatchException("  Name cannot contain numbers or symbols ")
-            else
+            else if (name.matches(Regex("^[\\p{L}\\s]+$")) || (!str.isMandatory && name.isBlank()))
                 return name.lowercase()
+            else
+                throw InputMismatchException("  Name cannot contain numbers or symbols ")
         } catch (e: InputMismatchException) {
             println("\n=========================================")
             println("${e.message}")
@@ -270,12 +271,12 @@ fun getMoneyInput(output: MoneyInput): String {
     var str: String
     while (true) {
         try {
-            print("${output.StringVal}: ")
+            print("${output.stringVal}: ")
             str = readln()
-            if ((str.toBigDecimal() > "0".toBigDecimal() || output.zeroAllowed) || output.negativeAllowed)
+            if (output.isValid(str.toBigDecimal()))
                 return str
             else
-                throw InputMismatchException("  ${output.StringVal} must be above 0  ")
+                throw InputMismatchException("  ${output.stringVal} must be above 0  ")
         } catch (e: NumberFormatException) {
             println("\n======================")
             println("  Only input numbers  ")
@@ -359,10 +360,9 @@ fun printOptions(list: MutableList<Account>) {
                         add(it)
                     }
                 }
-                if (list2.isEmpty()){
+                if (list2.isEmpty()) {
                     throw IllegalArgumentException("  No cards have been enrolled")
-                }
-                else {
+                } else {
                     println("======= Card Details =======")
                     list2.forEach { it.printCardDetails() }
                     println("============================")
@@ -372,7 +372,7 @@ fun printOptions(list: MutableList<Account>) {
                 println("======================================== Account Details ========================================")
                 list.forEach { it.getFormattedDetails() }
                 println("======================================== Account Details ========================================")
-            } else if(printInput == "X"){
+            } else if (printInput == "X") {
                 break
             } else
                 throw IllegalArgumentException("   Please input C or A only  ")
