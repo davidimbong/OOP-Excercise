@@ -1,23 +1,43 @@
+import java.lang.StringBuilder
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.util.*
 
-enum class AccountType(val longDesc: String) {
-    SA("Savings Account"),
-    CC("Credit Card"),
-    PC("Prepaid Card")
+enum class AccountType(val longDesc: String, val maxLength: Int) {
+    SA("Savings Account", 10),
+    CC("Credit Card", 16),
+    PC("Prepaid Card", 16)
 //    SAVINGS,
 //    CREDITCARD,
 //    PREPAIDCARD
 }
 
-enum class Currency(shortCode: String, longDesc: String) {
+enum class Currency(val shortCode: String, val longDesc: String) {
     PHP("PHP", "Philippine Peso"),
     USD("USD", "United States Dollar"),
     JPY("JPY", "Japanese Yen")
 }
 
+enum class Name(val stringVal: String,val isMandatory: Boolean){
+    FIRSTNAME("First name",true),
+    MIDDLENAME("Middle name",false),
+    LASTNAME("Last name",true),
+}
+
+enum class MoneyInput(val StringVal:String, val negativeAllowed: Boolean, val zeroAllowed: Boolean){
+    BALANCE("Balance",
+        true,
+        true),
+
+    CREDITLIMIT("Credit Limit",
+        false,
+        false),
+
+    AVAILABLEBALANCE("Available Balance",
+        false,
+        true)
+}
 
 fun main(args: Array<String>) {
 
@@ -27,17 +47,17 @@ fun main(args: Array<String>) {
 
     mainLoop@ while (true) {
         val accType = getAccType()
-        val fnameInput = getName("First name")
-        val mnameInput = getName("Middle name")
-        val lnameInput = getName("Last name")
+        val fnameInput = getName(Name.FIRSTNAME)
+        val mnameInput = getName(Name.MIDDLENAME)
+        val lnameInput = getName(Name.LASTNAME)
         val bdayInput = getBday()
         val currInput = getCurr()
-        val balanceInput = getMoneyInput("Balance")
+        val balanceInput = getMoneyInput(MoneyInput.BALANCE)
 
         //prepaid card
         when (accType) {
             AccountType.PC -> {
-                cardNumInput = getAccOrCardNumber(16, "Card")
+                cardNumInput = getAccOrCardNumber(AccountType.PC)
                 expDateInput = getExpiryDate()
                 list.add(
                     PrepaidCard(
@@ -55,9 +75,9 @@ fun main(args: Array<String>) {
 
             AccountType.CC -> {
 
-                cardNumInput = getAccOrCardNumber(16, "Card")
+                cardNumInput = getAccOrCardNumber(AccountType.CC)
                 expDateInput = getExpiryDate()
-                val creditLimitInput = getMoneyInput("Credit Limit")
+                val creditLimitInput = getMoneyInput(MoneyInput.CREDITLIMIT)
                 val cvvInput = getCVV()
                 list.add(
                     CreditCard(
@@ -77,7 +97,7 @@ fun main(args: Array<String>) {
             }
 
             AccountType.SA -> {
-                val accNumInput = getAccOrCardNumber(10, "Account")
+                val accNumInput = getAccOrCardNumber(AccountType.SA)
                 list.add(
                     Savings(
                         firstname = fnameInput,
@@ -95,7 +115,7 @@ fun main(args: Array<String>) {
         //ask user for next course of action
         while (true) {
             try {
-                println("(E) - Enroll another account/card \n(P) - Print\n(X) - Exit")
+                println("\n\n\n(E) - Enroll another account/card \n(P) - Print\n(X) - Exit")
                 print("What do you want to do next: ")
                 val finalInput = readln().uppercase()
 
@@ -119,7 +139,7 @@ fun main(args: Array<String>) {
 }
 
 fun getAccType(): Enum<AccountType> {
-    var str: Enum<AccountType>
+    var str: AccountType
     var input: String
     while (true) {
         try {
@@ -134,24 +154,24 @@ fun getAccType(): Enum<AccountType> {
             println("=================================\n")
             continue
         }
-        println("\n\n\n\n==============================   ${AccountType.valueOf(input).longDesc}   ==============================")
+        println("\n\n\n\n==============================   ${str.longDesc}   ==============================")
         println("Please input the desired information (please follow the format stated if there are any)")
         return str
     }
 }
 
-fun getName(str: String): String {
+fun getName(str: Name): String {
     var name: String
     while (true) {
         try {
-            print("$str: ")
+            print("${str.stringVal}: ")
             name = readln()
-            if (name.isBlank() && str != "Middle name")
-                throw InputMismatchException("   $str cannot be blank or empty   ")
+            if (name.isBlank() && str.isMandatory)
+                throw InputMismatchException("   ${str.stringVal} cannot be blank or empty   ")
             else if (name.any { it in "0123456789/?!:;%" } )
                 throw InputMismatchException("  Name cannot contain numbers or symbols ")
             else
-                return name
+                return name.lowercase()
         } catch (e: InputMismatchException) {
             println("\n=========================================")
             println("${e.message}")
@@ -178,7 +198,7 @@ fun getBday(): String {
                             "           i.e. 2000/12/25"
                 )
             else if (df.parse(str).after(SimpleDateFormat("yyyy-MM-dd").parse(LocalDate.now().toString())))
-                throw InputMismatchException("  Birthday must be before today's date")
+                throw InputMismatchException("    Birthday must be before today's date")
             else
                 return str
         } catch (e: ParseException) {
@@ -213,7 +233,7 @@ fun getExpiryDate(): String {
                             "              i.e. 12/25"
                 )
             if (!df.parse(str).after(SimpleDateFormat("yyyy-MM-dd").parse(LocalDate.now().toString())))
-                throw InputMismatchException("               Card can not be expired")
+                throw InputMismatchException("      Card can not be expired")
             else
                 return str
         } catch (e: ParseException) {
@@ -230,7 +250,7 @@ fun getExpiryDate(): String {
     }
 }
 
-fun getCurr(): Enum<Currency> {
+fun getCurr(): Currency {
     var str: String
     while (true) {
         try {
@@ -246,16 +266,16 @@ fun getCurr(): Enum<Currency> {
     }
 }
 
-fun getMoneyInput(output: String): String {
+fun getMoneyInput(output: MoneyInput): String {
     var str: String
     while (true) {
         try {
-            print("$output: ")
+            print("${output.StringVal}: ")
             str = readln()
-            if (str.toBigDecimal() > "0".toBigDecimal() || output == "Balance")
+            if ((str.toBigDecimal() > "0".toBigDecimal() || output.zeroAllowed) || output.negativeAllowed)
                 return str
             else
-                throw InputMismatchException("  $output must be above 0  ")
+                throw InputMismatchException("  ${output.StringVal} must be above 0  ")
         } catch (e: NumberFormatException) {
             println("\n======================")
             println("  Only input numbers  ")
@@ -270,18 +290,22 @@ fun getMoneyInput(output: String): String {
     }
 }
 
-fun getAccOrCardNumber(maxLength: Int, type: String): String {
+fun getAccOrCardNumber(type: AccountType): String {
     var str: String
     while (true) {
         try {
-            print("$type Number: ")
+            print("${type.longDesc} Number: ")
             str = readln()
             str = str.filter { !it.isWhitespace() }
-            @Suppress("RegExpSimplifiable")
-            if (str.matches(Regex("^\\d{$maxLength}+\$")))
+            val patternSB = StringBuilder().apply {
+                append("^\\d{")
+                append(type.maxLength)
+                append("}+\$")
+            }
+            if (str.matches(Regex("$patternSB")))
                 return str
             else
-                throw InputMismatchException("  Input does not amount to $maxLength digits  ")
+                throw InputMismatchException("  Input does not amount to ${type.maxLength} digits  ")
         } catch (e: NumberFormatException) {
             println("\n======================")
             println("  Only input numbers  ")
@@ -335,14 +359,19 @@ fun printOptions(list: MutableList<Account>) {
                         add(it)
                     }
                 }
-                if (list2.isNullOrEmpty()){
+                if (list2.isEmpty()){
                     throw IllegalArgumentException("  No cards have been enrolled")
                 }
-                else
+                else {
+                    println("======= Card Details =======")
                     list2.forEach { it.printCardDetails() }
+                    println("============================")
+                }
             } else if (printInput == "A") {
                 println("\n\n")
+                println("======================================== Account Details ========================================")
                 list.forEach { it.getFormattedDetails() }
+                println("======================================== Account Details ========================================")
             } else if(printInput == "X"){
                 break
             } else
